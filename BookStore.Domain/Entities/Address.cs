@@ -1,12 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Security.Principal;
-
-namespace BookStore.Domain.Entities
+﻿namespace BookStore.Domain.Entities
 {
     public class Address
     {
-        [Key]
         public int AddressId { get; set; }
 
         public string State { get; set; } = null!;
@@ -17,7 +12,6 @@ namespace BookStore.Domain.Entities
 
         #region Relations
 
-        [ForeignKey("UserId")]
         public string UserId { get; set; } = null!;
 
         public virtual User User { get; set; } = null!;

@@ -1,11 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BookStore.Domain.Entities
+﻿namespace BookStore.Domain.Entities
 {
     public class Book
     {
-        [Key]
         public int BookId { get; set; }
 
         public string Name { get; set; } = null!;
@@ -26,9 +22,10 @@ namespace BookStore.Domain.Entities
 
         public decimal Price { get; set; }
 
+        public bool IsDelete { get; set; } = false;
+
         #region Relations
 
-        [ForeignKey("PublisherId")]
         public int PublisherId { get; set; }
 
         public virtual Publisher Publisher { get; set; } = null!;
@@ -41,7 +38,11 @@ namespace BookStore.Domain.Entities
 
         public virtual List<Review> Reviews { get; set; } = new();
 
-        public List<Favorite> Favorites { get; set; } = new();
+        public virtual List<Favorite> Favorites { get; set; } = new();
+
+        public virtual List<OrderItem> OrderItems { get; set; } = new();
+
+        public virtual List<CartItem> CartItems { get; set; } = new();
 
         #endregion Relations
     }

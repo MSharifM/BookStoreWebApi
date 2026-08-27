@@ -1,11 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BookStore.Domain.Entities
+﻿namespace BookStore.Domain.Entities
 {
     public class Publisher
     {
-        [Key]
         public int PublisherId { get; set; }
 
         public string ImagePath { get; set; } = null!;
@@ -16,7 +12,6 @@ namespace BookStore.Domain.Entities
 
         #region Relations
 
-        [ForeignKey("UserId")]
         public string UserId { get; set; } = null!;
 
         public virtual User User { get; set; } = null!;

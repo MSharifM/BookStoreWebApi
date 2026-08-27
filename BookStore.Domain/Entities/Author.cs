@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BookStore.Domain.Entities
+﻿namespace BookStore.Domain.Entities
 {
     public class Author
     {
-        [Key]
         public int AuthorId { get; set; }
 
         public string FullName { get; set; } = null!;

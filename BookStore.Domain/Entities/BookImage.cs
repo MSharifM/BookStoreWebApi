@@ -1,12 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BookStore.Domain.Entities
+﻿namespace BookStore.Domain.Entities
 {
     public class BookImage
     {
         public int BookImageId { get; set; }
 
-        [ForeignKey("BookId")]
         public int BookId { get; set; }
 
         public virtual Book Book { get; set; } = null!;

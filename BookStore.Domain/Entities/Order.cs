@@ -15,7 +15,6 @@ namespace BookStore.Domain.Entities
 
         #region Relations
 
-        [ForeignKey("UserId")]
         public string UserId { get; set; } = null!;
 
         public virtual User User { get; set; } = null!;

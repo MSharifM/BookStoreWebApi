@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BookStore.Domain.Entities
 {
@@ -17,9 +16,11 @@ namespace BookStore.Domain.Entities
 
         public virtual List<ReviewReaction> ReviewReactions { get; set; } = new();
 
-        public List<Address> Addresses { get; set; } = new();
+        public virtual List<Address> Addresses { get; set; } = new();
 
         public virtual List<Favorite> Favorites { get; set; } = null!;
+
+        public virtual Publisher Publisher { get; set; } = null!;
 
         #endregion Relations
     }
