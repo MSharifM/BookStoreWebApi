@@ -1,5 +1,6 @@
 using BookStore.Domain.Entities;
 using BookStore.Infrastructure.Data;
+using BookStore.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,6 +40,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
 #endregion DataBase Context
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider
+        .GetRequiredService<RoleManager<IdentityRole>>();
+
+    await IdentitySeeder.SeedRolesAsync(roleManager);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
