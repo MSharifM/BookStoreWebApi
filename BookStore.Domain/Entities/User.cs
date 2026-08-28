@@ -22,6 +22,8 @@ namespace BookStore.Domain.Entities
 
         public virtual Publisher Publisher { get; set; } = null!;
 
+        public virtual List<RefreshToken> RefreshTokens { get; set; } = new();
+
         #endregion Relations
     }
 }

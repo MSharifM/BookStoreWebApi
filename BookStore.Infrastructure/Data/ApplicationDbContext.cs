@@ -27,6 +27,7 @@ namespace BookStore.Infrastructure.Data
         public virtual DbSet<Publisher> Publishers { get; set; }
         public virtual DbSet<Review> Reviews { get; set; }
         public virtual DbSet<ReviewReaction> ReviewReactions { get; set; }
+        public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

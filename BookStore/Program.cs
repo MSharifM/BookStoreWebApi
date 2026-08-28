@@ -1,16 +1,53 @@
+using System.Text;
 using BookStore.Domain.Entities;
 using BookStore.Infrastructure.Data;
 using BookStore.Infrastructure.Identity;
+using BookStore.Infrastructure.IoC;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+#region Authentication
+
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        var jwtSettings = builder.Configuration.GetSection("Jwt");
+
+        var key = jwtSettings["Key"]
+                  ?? throw new InvalidOperationException("JWT Key is not configured.");
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(key)),
+
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+#endregion Authentication
 
 #region Identity
 
@@ -39,6 +76,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
 
 #endregion DataBase Context
 
+#region Services
+
+DependencyContainers.RegisterServices(builder.Services);
+
+#endregion Services
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -54,9 +97,9 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
