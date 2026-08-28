@@ -12,13 +12,15 @@
 
         public string ISBN { get; set; } = null!;
 
-        public string DemoPDFPath { get; set; } = null!;
+        public string? DemoPDFPath { get; set; }
 
         public int CountPages { get; set; }
 
         public string Language { get; set; } = null!;
 
         public int StockQuantity { get; set; }
+
+        public string? Description { get; set; }
 
         public decimal Price { get; set; }
 

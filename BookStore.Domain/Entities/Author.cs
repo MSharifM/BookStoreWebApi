@@ -8,7 +8,7 @@
 
         public string ImagePath { get; set; } = null!;
 
-        public string Description { get; set; } = null!;
+        public string? Description { get; set; }
 
         public string PersonalCode { get; set; } = null!;
 

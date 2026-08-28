@@ -28,7 +28,14 @@ namespace BookStore.Infrastructure.Data.Configurations
                 .HasMaxLength(50);
 
             builder.Property(b => b.DemoPDFPath)
-                .HasMaxLength(150);
+                .HasMaxLength(150)
+                .IsRequired(false);
+
+            builder.Property(b => b.Description)
+                .HasMaxLength(700)
+                .IsRequired(false);
+
+            builder.HasQueryFilter(b => !b.IsDelete);
 
             // Relationship
             builder.HasOne(b => b.Publisher)

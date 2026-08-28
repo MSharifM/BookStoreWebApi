@@ -15,6 +15,13 @@ namespace BookStore.Infrastructure.Data.Configurations
             builder.Property(b => b.ImagePath)
                 .IsRequired();
 
+            builder.ToTable("Banners", table =>
+            {
+                table.HasCheckConstraint(
+                    "CK_Banner_Date",
+                    "[EndDate] > [StartDate]");
+            });
+
             builder.Property(b => b.Url)
                 .IsRequired();
         }
