@@ -65,25 +65,65 @@ namespace BookStore.Application.Services.Account
 
             await _userManager.ResetAccessFailedCountAsync(user);
 
-            var accessToken = _jwtService.GenerateAccessToken(user.Id, user.UserName!);
-            var refreshToken = _jwtService.GenerateRefreshToken();
-            var refreshTokenExpirationDays = int.Parse(_configuration["Jwt:RefreshTokenExpirationDays"]!);
-
-            var refreshTokenEntity = new RefreshToken
-            {
-                Token = refreshToken,
-                UserId = user.Id,
-                CreatedDate = DateTime.UtcNow,
-                ExpiryDate = DateTime.UtcNow.AddDays(refreshTokenExpirationDays)
-            };
-
-            await _refreshTokenRepository.AddAsync(refreshTokenEntity);
+            var (accessToken, refreshToken) = await GenerateNewAccessTokenAndRefreshTokenAsync(
+                user.Id, user.UserName!);
 
             result.IsSuccess = true;
             result.AccessToken = accessToken;
             result.RefreshToken = refreshToken;
 
             return result;
+        }
+
+        public async Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest model)
+        {
+            var result = new AuthResponse();
+            var refreshToken = await _refreshTokenRepository.GetByTokenAsync(model.RefreshToken);
+            if (refreshToken is null || refreshToken.ExpiryDate <= DateTime.UtcNow
+                                     || refreshToken.RevokedDate.HasValue)
+            {
+                result.ErrorMessage = "توکن نامعتبر است یا منقضی شده است لطفا د.وباره وارد شوید";
+                return result;
+            }
+
+            var user = await _userManager.FindByIdAsync(refreshToken.UserId);
+            if (user is null)
+            {
+                result.ErrorMessage = "توکن نامعتبر است";
+                return result;
+            }
+
+            // Rotation
+            await _refreshTokenRepository.RevokeAsync(refreshToken);
+
+            var (newAccessToken, newRefreshToken) = await GenerateNewAccessTokenAndRefreshTokenAsync(
+                user.Id, user.UserName!);
+
+            result.IsSuccess = true;
+            result.AccessToken = newAccessToken;
+            result.RefreshToken = newRefreshToken;
+
+            return result;
+        }
+
+        private async Task<(string AccessToken, string RefreshToken)> GenerateNewAccessTokenAndRefreshTokenAsync(
+            string userId, string userName)
+        {
+            var accessToken = _jwtService.GenerateAccessToken(userId, userName!);
+            var refreshToken = _jwtService.GenerateRefreshToken();
+            var refreshTokenExpirationDays = int.Parse(_configuration["Jwt:RefreshTokenExpirationDays"]!);
+
+            var refreshTokenEntity = new RefreshToken
+            {
+                Token = refreshToken,
+                UserId = userId,
+                CreatedDate = DateTime.UtcNow,
+                ExpiryDate = DateTime.UtcNow.AddDays(refreshTokenExpirationDays)
+            };
+
+            await _refreshTokenRepository.AddAsync(refreshTokenEntity);
+
+            return (accessToken, refreshToken);
         }
     }
 }

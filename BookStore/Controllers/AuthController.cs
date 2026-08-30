@@ -42,5 +42,19 @@ namespace BookStore.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(RefreshTokenRequest model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _accountService.RefreshTokenAsync(model);
+
+            if (!result.IsSuccess)
+                return Unauthorized(result.ErrorMessage);
+
+            return Ok(result);
+        }
     }
 }
