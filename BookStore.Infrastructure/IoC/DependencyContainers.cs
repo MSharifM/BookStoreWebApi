@@ -1,4 +1,7 @@
-﻿using BookStore.Application.Interfaces;
+﻿using BookStore.Application.Interfaces.Repositories;
+using BookStore.Application.Interfaces.Services;
+using BookStore.Application.Services.Account;
+using BookStore.Infrastructure.Repositories;
 using BookStore.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,6 +12,9 @@ namespace BookStore.Infrastructure.IoC
         public static void RegisterServices(IServiceCollection service)
         {
             service.AddScoped<IJwtService, JwtService>();
+            service.AddScoped<IAccountService, AccountService>();
+            service.AddScoped<IUserRepository, UserRepository>();
+            service.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         }
     }
 }

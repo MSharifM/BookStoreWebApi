@@ -3,8 +3,8 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using BookStore.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
+using BookStore.Application.Interfaces.Services;
 
 namespace BookStore.Infrastructure.Services
 {

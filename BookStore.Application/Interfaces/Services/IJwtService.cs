@@ -1,4 +1,4 @@
-﻿namespace BookStore.Application.Interfaces
+﻿namespace BookStore.Application.Interfaces.Services
 {
     public interface IJwtService
     {

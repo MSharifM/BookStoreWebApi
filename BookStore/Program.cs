@@ -61,7 +61,9 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
         options.User.RequireUniqueEmail = true;
         options.User.AllowedUserNameCharacters = "_+QWERTYUIOPASDFGHJKLZXCVBNM1234567890-qwertyuiopasdfghjklxcvbnm";
 
-        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(20);
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.AllowedForNewUsers = true;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
