@@ -1,5 +1,6 @@
 ﻿using BookStore.Application.DTOs.Account;
 using BookStore.Application.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.Api.Controllers
@@ -55,6 +56,33 @@ namespace BookStore.Api.Controllers
                 return Unauthorized(result.ErrorMessage);
 
             return Ok(result);
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout(RefreshTokenRequest model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _accountService.LogoutAsync(model);
+
+            if (!result)
+                return BadRequest("توکن نامعتبر است");
+
+            return Ok();
+        }
+
+        [HttpGet("all")]
+        [Authorize]
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(new JsonResult("salam"));
+        }
+
+        [HttpGet("get")]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(new JsonResult("salam"));
         }
     }
 }

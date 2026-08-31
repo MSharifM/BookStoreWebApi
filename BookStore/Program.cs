@@ -51,7 +51,7 @@ builder.Services
 
 #region Identity
 
-builder.Services.AddIdentity<User, IdentityRole>(options =>
+builder.Services.AddIdentityCore<User>(options =>
     {
         options.Password.RequireDigit = false;
         options.Password.RequireUppercase = false;
@@ -65,7 +65,9 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
         options.Lockout.MaxFailedAccessAttempts = 5;
         options.Lockout.AllowedForNewUsers = true;
     })
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 #endregion Identity
 

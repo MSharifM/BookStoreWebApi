@@ -35,6 +35,9 @@ namespace BookStore.Application.Services.Account
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
+            if (result.Succeeded)
+                await _userManager.AddToRoleAsync(user, "User");
+
             return result;
         }
 
@@ -65,8 +68,9 @@ namespace BookStore.Application.Services.Account
 
             await _userManager.ResetAccessFailedCountAsync(user);
 
+            var roles = await _userManager.GetRolesAsync(user);
             var (accessToken, refreshToken) = await GenerateNewAccessTokenAndRefreshTokenAsync(
-                user.Id, user.UserName!);
+                user.Id, user.UserName!, roles);
 
             result.IsSuccess = true;
             result.AccessToken = accessToken;
@@ -96,8 +100,9 @@ namespace BookStore.Application.Services.Account
             // Rotation
             await _refreshTokenRepository.RevokeAsync(refreshToken);
 
+            var roles = await _userManager.GetRolesAsync(user);
             var (newAccessToken, newRefreshToken) = await GenerateNewAccessTokenAndRefreshTokenAsync(
-                user.Id, user.UserName!);
+                user.Id, user.UserName!, roles);
 
             result.IsSuccess = true;
             result.AccessToken = newAccessToken;
@@ -107,9 +112,9 @@ namespace BookStore.Application.Services.Account
         }
 
         private async Task<(string AccessToken, string RefreshToken)> GenerateNewAccessTokenAndRefreshTokenAsync(
-            string userId, string userName)
+            string userId, string userName, IEnumerable<string> roles)
         {
-            var accessToken = _jwtService.GenerateAccessToken(userId, userName!);
+            var accessToken = _jwtService.GenerateAccessToken(userId, userName!, roles);
             var refreshToken = _jwtService.GenerateRefreshToken();
             var refreshTokenExpirationDays = int.Parse(_configuration["Jwt:RefreshTokenExpirationDays"]!);
 
@@ -124,6 +129,18 @@ namespace BookStore.Application.Services.Account
             await _refreshTokenRepository.AddAsync(refreshTokenEntity);
 
             return (accessToken, refreshToken);
+        }
+
+        public async Task<bool> LogoutAsync(RefreshTokenRequest model)
+        {
+            var token = await _refreshTokenRepository.GetByTokenAsync(model.RefreshToken);
+
+            if (token is null || token.RevokedDate.HasValue)
+                return false;
+
+            await _refreshTokenRepository.RevokeAsync(token);
+
+            return true;
         }
     }
 }

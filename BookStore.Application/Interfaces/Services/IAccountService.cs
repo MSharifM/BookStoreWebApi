@@ -10,5 +10,7 @@ namespace BookStore.Application.Interfaces.Services
         Task<AuthResponse> LoginAsync(LoginRequest model);
 
         Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest model);
+
+        Task<bool> LogoutAsync(RefreshTokenRequest model);
     }
 }
