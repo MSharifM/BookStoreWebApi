@@ -1,4 +1,4 @@
-﻿using BookStore.Application.DTOs.Account;
+﻿using BookStore.Application.DTOs.AccountDto;
 using Microsoft.AspNetCore.Identity;
 
 namespace BookStore.Application.Interfaces.Services

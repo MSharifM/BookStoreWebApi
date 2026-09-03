@@ -1,4 +1,4 @@
-﻿using BookStore.Application.DTOs.Account;
+﻿using BookStore.Application.DTOs.AccountDto;
 using BookStore.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -70,19 +70,6 @@ namespace BookStore.Api.Controllers
                 return BadRequest("توکن نامعتبر است");
 
             return Ok();
-        }
-
-        [HttpGet("all")]
-        [Authorize]
-        public async Task<IActionResult> GetAll()
-        {
-            return Ok(new JsonResult("salam"));
-        }
-
-        [HttpGet("get")]
-        public async Task<IActionResult> Get()
-        {
-            return Ok(new JsonResult("salam"));
         }
     }
 }

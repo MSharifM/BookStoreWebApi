@@ -1,4 +1,4 @@
-﻿using BookStore.Application.DTOs.Account;
+﻿using BookStore.Application.DTOs.AccountDto;
 using BookStore.Application.Interfaces.Repositories;
 using BookStore.Application.Interfaces.Services;
 using BookStore.Domain.Entities;

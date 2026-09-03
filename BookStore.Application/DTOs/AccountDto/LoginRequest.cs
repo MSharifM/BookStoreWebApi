@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BookStore.Application.DTOs.Account
+namespace BookStore.Application.DTOs.AccountDto
 {
     public class LoginRequest
     {

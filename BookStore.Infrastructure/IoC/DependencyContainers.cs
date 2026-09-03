@@ -13,8 +13,11 @@ namespace BookStore.Infrastructure.IoC
         {
             service.AddScoped<IJwtService, JwtService>();
             service.AddScoped<IAccountService, AccountService>();
+            service.AddScoped<IDapperContext, DapperContext>();
+            service.AddScoped<IBannerRepository, BannerRepository>();
             service.AddScoped<IUserRepository, UserRepository>();
             service.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            service.AddScoped<IBookRepository, BookRepository>();
         }
     }
 }

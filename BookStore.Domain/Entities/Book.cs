@@ -1,4 +1,6 @@
-﻿namespace BookStore.Domain.Entities
+﻿using System.Security.Principal;
+
+namespace BookStore.Domain.Entities
 {
     public class Book
     {
@@ -23,6 +25,8 @@
         public string? Description { get; set; }
 
         public decimal Price { get; set; }
+
+        public DateTime CreateDate { get; set; } = DateTime.Now;
 
         public bool IsDelete { get; set; } = false;
 

@@ -24,4 +24,9 @@
     <ProjectReference Include="..\BookStore.Infrastructure\BookStore.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\banner\" />
+    <Folder Include="wwwroot\images\user_profile\" />
+  </ItemGroup>
+
 </Project>

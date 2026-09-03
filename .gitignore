@@ -257,4 +257,5 @@ paket-files/
 # CodeRush
 .cr/
 
-appsettings.Development.json
+appsettings.Development.
+BookStore/wwwroot/
