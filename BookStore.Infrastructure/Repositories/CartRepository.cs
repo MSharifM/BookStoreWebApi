@@ -123,7 +123,7 @@ namespace BookStore.Infrastructure.Repositories
 
         public async Task ClearCartAsync(string userId)
         {
-            var cartItems = await _context.CartItems
+            await _context.CartItems
                 .Where(c => c.Cart.UserId == userId)
                 .ExecuteDeleteAsync();
         }

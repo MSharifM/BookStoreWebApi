@@ -17,6 +17,7 @@ namespace BookStore.Infrastructure.IoC
             service.AddScoped<IBannerRepository, BannerRepository>();
             service.AddScoped<IUserRepository, UserRepository>();
             service.AddScoped<ICartRepository, CartRepository>();
+            service.AddScoped<IFavoriteRepository, FavoriteRepository>();
             service.AddScoped<IPublisherRepository, PublisherRepository>();
             service.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             service.AddScoped<IBookRepository, BookRepository>();
