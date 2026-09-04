@@ -17,6 +17,7 @@ namespace BookStore.Infrastructure.Repositories
         public async Task<List<BannerHomePageResponse>> GetHomePageBannerAsync()
         {
             var result = await _context.Banners
+                .AsNoTracking()
                 .Select(b => new BannerHomePageResponse()
                 {
                     ImageName = b.ImagePath,

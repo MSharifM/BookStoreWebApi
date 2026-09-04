@@ -10,11 +10,13 @@ namespace BookStore.Api.Controllers
     {
         private readonly IBookRepository _bookRepository;
         private readonly IBannerRepository _bannerRepository;
+        private readonly IPublisherRepository _publisherRepository;
 
-        public HomeController(IBookRepository bookRepository, IBannerRepository bannerRepository)
+        public HomeController(IBookRepository bookRepository, IBannerRepository bannerRepository, IPublisherRepository publisherRepository)
         {
             _bookRepository = bookRepository;
             _bannerRepository = bannerRepository;
+            _publisherRepository = publisherRepository;
         }
 
         [HttpGet("newest")]
@@ -46,6 +48,14 @@ namespace BookStore.Api.Controllers
         {
             // TODO: Implement discount service
             return Ok(new List<BookSummaryResponse>());
+        }
+
+        [HttpGet("bestsellers-publisher")]
+        public async Task<IActionResult> GetBestSellerPublisher()
+        {
+            var result = await _publisherRepository.GetBestSellerPublisher();
+
+            return Ok(result);
         }
 
         [HttpGet("banner")]

@@ -17,6 +17,7 @@ namespace BookStore.Infrastructure.Repositories
         public Task<User?> GetUserByEmailOrUserNameAsync(string emailOrUserName)
         {
             var user = _context.Users
+                .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.UserName == emailOrUserName
                                           || u.Email == emailOrUserName);
 

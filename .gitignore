@@ -259,3 +259,4 @@ paket-files/
 
 appsettings.Development.
 BookStore/wwwroot/
+*.sln.DotSettings

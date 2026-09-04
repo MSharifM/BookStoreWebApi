@@ -358,7 +358,7 @@ namespace BookStore.Infrastructure.Data.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("UnitPrice")
+                    b.Property<decimal>("TotalPrice")
                         .HasPrecision(20)
                         .HasColumnType("decimal(20,0)");
 

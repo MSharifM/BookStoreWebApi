@@ -249,6 +249,7 @@ namespace BookStore.Infrastructure.Repositories
             var skip = (page - 1) * step;
 
             var result = await _context.Reviews
+                .AsNoTracking()
                 .Where(r => r.BookId == bookId)
                 .OrderByDescending(r => r.CreateDate)
                 .ThenByDescending(r => r.ReviewId)
