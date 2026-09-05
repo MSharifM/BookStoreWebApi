@@ -11,9 +11,16 @@ namespace BookStore.Infrastructure.IoC
     {
         public static void RegisterServices(IServiceCollection service)
         {
+            #region Services
+
             service.AddScoped<IJwtService, JwtService>();
             service.AddScoped<IAccountService, AccountService>();
             service.AddScoped<IDapperContext, DapperContext>();
+
+            #endregion Services
+
+            #region Repositories
+
             service.AddScoped<IBannerRepository, BannerRepository>();
             service.AddScoped<IUserRepository, UserRepository>();
             service.AddScoped<ICartRepository, CartRepository>();
@@ -21,6 +28,9 @@ namespace BookStore.Infrastructure.IoC
             service.AddScoped<IPublisherRepository, PublisherRepository>();
             service.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             service.AddScoped<IBookRepository, BookRepository>();
+            service.AddScoped<IAddressRepository, AddressRepository>();
+
+            #endregion Repositories
         }
     }
 }
