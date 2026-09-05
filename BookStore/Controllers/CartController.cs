@@ -33,7 +33,7 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("detail")]
+        [HttpGet]
         public async Task<IActionResult> GetCartDetail()
         {
             var result = await _cartRepository.GetCartDetailAsync(UserId!);

@@ -29,6 +29,7 @@ namespace BookStore.Infrastructure.IoC
             service.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             service.AddScoped<IBookRepository, BookRepository>();
             service.AddScoped<IAddressRepository, AddressRepository>();
+            service.AddScoped<IUserPanelRepository, UserPanelRepository>();
 
             #endregion Repositories
         }

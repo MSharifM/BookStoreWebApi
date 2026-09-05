@@ -29,7 +29,7 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("detail")]
+        [HttpGet]
         public async Task<IActionResult> GetFavoriteDetail()
         {
             var result = await _favoriteRepository.GetFavoriteItemsDetailAsync(UserId!);
