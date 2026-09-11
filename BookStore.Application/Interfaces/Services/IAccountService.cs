@@ -1,4 +1,5 @@
 ﻿using BookStore.Application.DTOs.AccountDto;
+using BookStore.Application.DTOs.UserProfileDto;
 using Microsoft.AspNetCore.Identity;
 
 namespace BookStore.Application.Interfaces.Services
@@ -12,5 +13,7 @@ namespace BookStore.Application.Interfaces.Services
         Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest model);
 
         Task<bool> LogoutAsync(RefreshTokenRequest model);
+
+        Task<IdentityResult?> EditUserProfileAsync(string userId, EditProfileRequest newModel);
     }
 }

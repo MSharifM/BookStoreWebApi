@@ -1,4 +1,7 @@
-﻿using BookStore.Application.DTOs.AccountDto;
+﻿using System.Security.Claims;
+using BookStore.Application.Constants;
+using BookStore.Application.DTOs.AccountDto;
+using BookStore.Application.DTOs.UserProfileDto;
 using BookStore.Application.Interfaces.Repositories;
 using BookStore.Application.Interfaces.Services;
 using BookStore.Domain.Entities;
@@ -14,14 +17,16 @@ namespace BookStore.Application.Services.Account
         private readonly IConfiguration _configuration;
         private readonly IUserRepository _userRepository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly IFileStorageService _fileStorageService;
 
-        public AccountService(UserManager<User> userManager, IJwtService jwtService, IConfiguration configuration, IUserRepository userRepository, IRefreshTokenRepository refreshTokenRepository)
+        public AccountService(UserManager<User> userManager, IJwtService jwtService, IConfiguration configuration, IUserRepository userRepository, IRefreshTokenRepository refreshTokenRepository, IFileStorageService fileStorageService)
         {
             _userManager = userManager;
             _jwtService = jwtService;
             _configuration = configuration;
             _userRepository = userRepository;
             _refreshTokenRepository = refreshTokenRepository;
+            _fileStorageService = fileStorageService;
         }
 
         public async Task<IdentityResult> RegisterAsync(RegisterRequest model)
@@ -141,6 +146,29 @@ namespace BookStore.Application.Services.Account
             await _refreshTokenRepository.RevokeAsync(token);
 
             return true;
+        }
+
+        public async Task<IdentityResult?> EditUserProfileAsync(string userId, EditProfileRequest newModel)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user is null)
+                return null;
+
+            user.UserName = newModel.UserName;
+            user.Email = newModel.Email;
+            user.PhoneNumber = newModel.Phone;
+            if (newModel.ImageData != null)
+            {
+                // Save new image
+                var fileName = await _fileStorageService.SaveImageAsync(newModel.ImageData, FileStorageConstants.Paths.UserProfile);
+                // Delete old image
+                _fileStorageService.DeleteImage(user.ImageProfile, FileStorageConstants.Paths.UserProfile);
+                user.ImageProfile = fileName;
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+            return result;
         }
     }
 }

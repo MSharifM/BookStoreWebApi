@@ -74,7 +74,7 @@ namespace BookStore.Infrastructure.Repositories
                     {
                         BookId = ci.BookId,
                         BookName = ci.Book.Name,
-                        BookImage = FileStoragePaths.BookImageFolder + ci.Book.BookImages
+                        BookImage = FileStorageConstants.Paths.BookImage + ci.Book.BookImages
                             .FirstOrDefault(bi => bi.IsMain)!.ImageName,
                         StockQuantity = ci.Book.StockQuantity,
                         CountItemInCart = ci.Count,

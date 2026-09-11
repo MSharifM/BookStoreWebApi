@@ -46,7 +46,7 @@ namespace BookStore.Infrastructure.Repositories
             using var connection = _dapperContext.CreateConnection();
 
             var result = await connection.QueryAsync<PublisherSummaryResponse>(
-                query, new { ImagePath = FileStoragePaths.UserProfileFolder });
+                query, new { ImagePath = FileStorageConstants.Paths.UserProfile });
 
             return result.ToList();
         }

@@ -57,7 +57,7 @@ namespace BookStore.Infrastructure.Repositories
                 {
                     BookId = f.BookId,
                     BookName = f.Book.Name,
-                    BookImage = FileStoragePaths.BookImageFolder + f.Book.BookImages
+                    BookImage = FileStorageConstants.Paths.BookImage + f.Book.BookImages
                         .FirstOrDefault(bi => bi.IsMain)!.ImageName,
                 })
                 .ToListAsync();

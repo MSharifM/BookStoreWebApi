@@ -1,4 +1,5 @@
-﻿using BookStore.Domain.Entities;
+﻿using BookStore.Application.Constants;
+using BookStore.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,7 +12,7 @@ namespace BookStore.Infrastructure.Data.Configurations
             // Properties
             builder.Property(u => u.ImageProfile)
                 .HasMaxLength(200)
-                .HasDefaultValue("DefaultUserProfile.jpg");
+                .HasDefaultValue(FileStorageConstants.Defaults.UserProfileImage);
         }
     }
 }

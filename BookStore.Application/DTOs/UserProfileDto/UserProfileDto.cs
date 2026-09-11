@@ -1,4 +1,5 @@
-﻿using BookStore.Application.DTOs.OrderDto;
+﻿using BookStore.Application.DTOs.CommonDto;
+using BookStore.Application.DTOs.OrderDto;
 
 namespace BookStore.Application.DTOs.UserProfileDto
 {
@@ -13,5 +14,21 @@ namespace BookStore.Application.DTOs.UserProfileDto
         public int CountOrders { get; set; }
 
         public OrderSummaryResponse? LastOrderSummary { get; set; }
+    }
+
+    public class ProfileInformationResponse
+    {
+        public string UserName { get; set; } = null!;
+        public string Email { get; set; } = null!;
+        public string? Phone { get; set; }
+        public string ImageProfile { get; set; } = null!;
+    }
+
+    public class EditProfileRequest
+    {
+        public string UserName { get; set; } = null!;
+        public string Email { get; set; } = null!;
+        public string? Phone { get; set; }
+        public FileDataDto? ImageData { get; set; }
     }
 }

@@ -71,7 +71,7 @@ namespace BookStore.Infrastructure.Repositories
             using var connection = _dapperContext.CreateConnection();
 
             var result = await connection.QueryAsync<BookSummaryResponse>(
-                query, new { ImagePath = FileStoragePaths.BookImageFolder });
+                query, new { ImagePath = FileStorageConstants.Paths.BookImage });
 
             return result.ToList();
         }
@@ -129,7 +129,7 @@ namespace BookStore.Infrastructure.Repositories
             using var connection = _dapperContext.CreateConnection();
 
             var result = await connection.QueryAsync<BookSummaryResponse>(
-                query, new { ImagePath = FileStoragePaths.BookImageFolder });
+                query, new { ImagePath = FileStorageConstants.Paths.BookImage });
 
             return result.ToList();
         }
@@ -190,7 +190,7 @@ namespace BookStore.Infrastructure.Repositories
             using var connection = _dapperContext.CreateConnection();
 
             var result = await connection.QueryAsync<BookSummaryResponse>(
-                query, new { ImagePath = FileStoragePaths.BookImageFolder });
+                query, new { ImagePath = FileStorageConstants.Paths.BookImage });
 
             return result.ToList();
         }
@@ -210,7 +210,7 @@ namespace BookStore.Infrastructure.Repositories
                     Price = b.Price,
                     CreateDate = b.CreateDate,
                     CountPages = b.CountPages,
-                    DemoPDFPath = FileStoragePaths.BookDemoFolder + b.DemoPDFPath,
+                    DemoPDFPath = FileStorageConstants.Paths.BookDemo + b.DemoPDFPath,
                     Description = b.Description,
                     ISBN = b.ISBN,
                     Language = b.Language,
@@ -220,7 +220,7 @@ namespace BookStore.Infrastructure.Repositories
                     Rate = b.Reviews.Average(r => r.Rate),
 
                     BookImages = b.BookImages.OrderBy(bi => bi.DisplayOrder)
-                        .Select(bi => FileStoragePaths.BookImageFolder + bi.ImageName).ToList(),
+                        .Select(bi => FileStorageConstants.Paths.BookImage + bi.ImageName).ToList(),
 
                     WriterNames = b.BookAuthors.Where(ba => ba.AuthorType == AuthorType.Writer)
                         .Select(ba => ba.Author.FullName).ToList(),
@@ -258,7 +258,7 @@ namespace BookStore.Infrastructure.Repositories
                 .Select(r => new ReviewBookResponse()
                 {
                     UserName = r.User.UserName!,
-                    UserImage = FileStoragePaths.UserProfileFolder + r.User.ImageProfile,
+                    UserImage = FileStorageConstants.Paths.UserProfile + r.User.ImageProfile,
                     Content = r.Content,
                     Rate = r.Rate,
                     CreateDate = r.CreateDate,
