@@ -49,7 +49,9 @@ namespace BookStore.Application.Services.Account
         public async Task<AuthResponse> LoginAsync(LoginRequest model)
         {
             var result = new AuthResponse();
-            var user = await _userRepository.GetUserByEmailOrUserNameAsync(model.UserNameOrEmail);
+            // Get user by email or username
+            var user = await _userManager.FindByNameAsync(model.UserNameOrEmail)
+                       ?? await _userManager.FindByEmailAsync(model.UserNameOrEmail);
 
             string errorMessageInvalidInformation = "نام کاربری یا رمز عبور اشتباه است";
             if (user is null)
@@ -168,6 +170,17 @@ namespace BookStore.Application.Services.Account
             }
 
             var result = await _userManager.UpdateAsync(user);
+            return result;
+        }
+
+        public async Task<IdentityResult?> ChangePasswordAsync(string userId, ChangePasswordRequest model)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+                return null;
+
+            var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+
             return result;
         }
     }

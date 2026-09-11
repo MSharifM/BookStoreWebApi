@@ -15,5 +15,7 @@ namespace BookStore.Application.Interfaces.Services
         Task<bool> LogoutAsync(RefreshTokenRequest model);
 
         Task<IdentityResult?> EditUserProfileAsync(string userId, EditProfileRequest newModel);
+
+        Task<IdentityResult?> ChangePasswordAsync(string userId, ChangePasswordRequest model);
     }
 }

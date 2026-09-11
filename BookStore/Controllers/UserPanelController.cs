@@ -5,6 +5,7 @@ using BookStore.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using BookStore.Application.DTOs.AccountDto;
 
 namespace BookStore.Api.Controllers
 {
@@ -59,6 +60,23 @@ namespace BookStore.Api.Controllers
                 model.ImageData = await ConvertIFormFileToDto(file);
 
             var result = await _accountService.EditUserProfileAsync(UserId, model);
+
+            if (result is null)
+                return NotFound();
+
+            if (result.Succeeded)
+                return Ok(true);
+
+            return BadRequest(result.Errors);
+        }
+
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequest model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _accountService.ChangePasswordAsync(UserId, model);
 
             if (result is null)
                 return NotFound();
