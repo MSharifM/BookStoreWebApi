@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.Infrastructure.Repositories
 {
-    internal class FavoriteRepository : IFavoriteRepository
+    public class FavoriteRepository : IFavoriteRepository
     {
         private readonly ApplicationDbContext _context;
 

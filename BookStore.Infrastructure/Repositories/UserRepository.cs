@@ -35,7 +35,7 @@ namespace BookStore.Infrastructure.Repositories
                             OrderId = o.OrderId,
                             Status = o.OrderStatus,
                             TotalPrice = o.OrderItems.Sum(oi => oi.Count * oi.UnitPrice),
-                            CountBooks = o.OrderItems.Sum(oi => oi.Count)
+                            CountItems = o.OrderItems.Sum(oi => oi.Count)
                         })
                         .FirstOrDefault()
                 })

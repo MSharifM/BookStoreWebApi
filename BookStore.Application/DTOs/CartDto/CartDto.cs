@@ -23,7 +23,7 @@ namespace BookStore.Application.DTOs.CartDto
         public string BookImage { get; set; } = null!;
         public int CountItemInCart { get; set; }
         public int StockQuantity { get; set; }
-        public decimal TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; } // Count * price
     }
 
     public class UpdateCartRequest
