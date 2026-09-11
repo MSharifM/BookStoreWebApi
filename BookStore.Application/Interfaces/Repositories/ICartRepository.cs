@@ -10,7 +10,7 @@ namespace BookStore.Application.Interfaces.Repositories
 
         Task<bool> RemoveFromCartAsync(string userId, int bookId);
 
-        Task<bool> UpdateCartAsync(string userId, int bookId, bool isIncrease);
+        Task<bool> UpdateCartAsync(string userId, UpdateCartRequest model);
 
         Task ClearCartAsync(string userId);
     }

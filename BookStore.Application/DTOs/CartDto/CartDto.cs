@@ -25,4 +25,10 @@ namespace BookStore.Application.DTOs.CartDto
         public int StockQuantity { get; set; }
         public decimal TotalPrice { get; set; }
     }
+
+    public class UpdateCartRequest
+    {
+        public int BookId { get; set; }
+        public bool IsIncrease { get; set; }
+    }
 }

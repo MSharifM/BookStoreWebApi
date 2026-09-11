@@ -16,6 +16,7 @@ namespace BookStore.Api.Controllers
             _accountService = accountService;
         }
 
+        // POST /api/auth/register
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest model)
         {
@@ -30,6 +31,7 @@ namespace BookStore.Api.Controllers
             return BadRequest(result.Errors);
         }
 
+        // POST /api/auth/login
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest model)
         {
@@ -44,6 +46,7 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
+        // POST /api/auth/refresh-token
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken(RefreshTokenRequest model)
         {
@@ -58,6 +61,7 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
+        // POST /api/auth/logout
         [HttpPost("logout")]
         public async Task<IActionResult> Logout(RefreshTokenRequest model)
         {

@@ -18,7 +18,8 @@ namespace BookStore.Api.Controllers
             _favoriteRepository = favoriteRepository;
         }
 
-        [HttpPost("add")]
+        // POST /api/favorite/
+        [HttpPost]
         public async Task<IActionResult> AddToFavorite(int bookId)
         {
             var result = await _favoriteRepository.AddToFavoriteAsync(UserId!, bookId);
@@ -29,6 +30,7 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
+        // GET /api/favorite/
         [HttpGet]
         public async Task<IActionResult> GetFavoriteDetail()
         {
@@ -40,7 +42,8 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("remove")]
+        // DELETE /api/favorite/{bookId}
+        [HttpDelete]
         public async Task<IActionResult> RemoveFromFavorite(int bookId)
         {
             var result = await _favoriteRepository.RemoveFromFavoriteAsync(UserId!, bookId);
@@ -51,6 +54,7 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
+        // DELETE /api/favorite/
         [HttpDelete("clear")]
         public async Task<IActionResult> ClearFavorite()
         {

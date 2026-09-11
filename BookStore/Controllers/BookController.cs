@@ -14,6 +14,7 @@ namespace BookStore.Api.Controllers
             _bookRepository = bookRepository;
         }
 
+        // GET /api/book/{bookId}
         [HttpGet("{bookId:int}")]
         public async Task<IActionResult> GetBookDetail(int bookId)
         {
@@ -25,6 +26,7 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
+        // GET /api/book/{bookId}/reviews
         [HttpGet("{bookId:int}/reviews")]
         public async Task<IActionResult> GetBookReviews(int bookId, [FromQuery] int page = 1)
         {

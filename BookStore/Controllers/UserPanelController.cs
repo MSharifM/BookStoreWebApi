@@ -25,6 +25,7 @@ namespace BookStore.Api.Controllers
             _accountService = accountService;
         }
 
+        // GET /api/userPanel/
         [HttpGet]
         public async Task<IActionResult> GetUserPanelDetail()
         {
@@ -36,6 +37,7 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
+        // GET /api/userPanel/profile
         [HttpGet("profile")]
         public async Task<IActionResult> GetUserProfileInformation()
         {
@@ -47,7 +49,8 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPut("edit")]
+        // PUT /api/userPanel/
+        [HttpPut]
         public async Task<IActionResult> EditUserProfile([FromForm] EditProfileRequest model, IFormFile? file)
         {
             if (!ModelState.IsValid)
@@ -70,6 +73,7 @@ namespace BookStore.Api.Controllers
             return BadRequest(result.Errors);
         }
 
+        // PUT /api/userPanel/change-password
         [HttpPut("change-password")]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest model)
         {

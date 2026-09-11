@@ -19,7 +19,8 @@ namespace BookStore.Api.Controllers
             _cartRepository = cartRepository;
         }
 
-        [HttpPost("add")]
+        // POST /api/cart
+        [HttpPost]
         public async Task<IActionResult> AddToCart(AddCartRequest model)
         {
             if (!ModelState.IsValid)
@@ -33,6 +34,7 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
+        // GET /api/cart
         [HttpGet]
         public async Task<IActionResult> GetCartDetail()
         {
@@ -44,7 +46,8 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("remove")]
+        // DELETE /api/cart/{bookId}
+        [HttpDelete("{bookId:int}")]
         public async Task<IActionResult> RemoveFromCart(int bookId)
         {
             var result = await _cartRepository.RemoveFromCartAsync(UserId!, bookId);
@@ -55,10 +58,11 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateCart(int bookId, bool isIncrease)
+        // PUT api/cart
+        [HttpPut]
+        public async Task<IActionResult> UpdateCart(UpdateCartRequest model)
         {
-            var result = await _cartRepository.UpdateCartAsync(UserId!, bookId, isIncrease);
+            var result = await _cartRepository.UpdateCartAsync(UserId!, model);
 
             if (!result)
                 return BadRequest();
@@ -66,7 +70,8 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("clear")]
+        // DELETE /api/cart
+        [HttpDelete]
         public async Task<IActionResult> ClearCart()
         {
             await _cartRepository.ClearCartAsync(UserId!);

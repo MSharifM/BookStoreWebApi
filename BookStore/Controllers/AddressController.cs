@@ -19,7 +19,8 @@ namespace BookStore.Api.Controllers
             _addressRepository = addressRepository;
         }
 
-        [HttpPost("add")]
+        // POST api/address
+        [HttpPost]
         public async Task<IActionResult> AddAddress(AddressDto model)
         {
             if (!ModelState.IsValid)
@@ -33,6 +34,7 @@ namespace BookStore.Api.Controllers
             return Created();
         }
 
+        // GET /api/address
         [HttpGet]
         public async Task<IActionResult> GetUserAddress()
         {
@@ -44,7 +46,8 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPut("update")]
+        // PUT /api/address
+        [HttpPut]
         public async Task<IActionResult> UpdateUserAddress(AddressDto model)
         {
             if (!ModelState.IsValid)

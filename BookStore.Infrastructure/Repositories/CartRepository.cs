@@ -100,18 +100,18 @@ namespace BookStore.Infrastructure.Repositories
             return true;
         }
 
-        public async Task<bool> UpdateCartAsync(string userId, int bookId, bool isIncrease)
+        public async Task<bool> UpdateCartAsync(string userId, UpdateCartRequest model)
         {
             var cartItem = await _context.CartItems
                 .Include(cartItem => cartItem.Book)
-                .FirstOrDefaultAsync(ci => ci.Cart.UserId == userId && ci.BookId == bookId);
+                .FirstOrDefaultAsync(ci => ci.Cart.UserId == userId && ci.BookId == model.BookId);
 
             if (cartItem == null)
                 return false;
 
-            if (isIncrease && cartItem.Book.StockQuantity >= cartItem.Count + 1)
+            if (model.IsIncrease && cartItem.Book.StockQuantity >= cartItem.Count + 1)
                 cartItem.Count++;
-            else if (!isIncrease && cartItem.Count > 1)
+            else if (!model.IsIncrease && cartItem.Count > 1)
                 cartItem.Count--;
             else
                 return false;
