@@ -10,7 +10,7 @@ namespace BookStore.Application.Interfaces.Repositories
 
         Task ReduceBookQuantityAsync(CartDetailResponse cartDetail);
 
-        Task<bool> ChangeOrderStatusAsync(int orderId, OrderStatus newStatus);
+        Task<bool> ChangeOrderStatusAsync(int orderId, List<OrderStatus> oldStatus, OrderStatus newStatus);
 
         Task<string?> GetUserIdByOrderIdAsync(int orderId);
 

@@ -6,7 +6,7 @@ namespace BookStore.Application.Interfaces.Services
     {
         Task<bool> FinalizeOrderAsync(string userId);
 
-        Task ProcessingPaymentResultAsync(int orderId, bool isSuccess);
+        Task ProcessingPaymentResultAsync(PaymentGatewayRequest model);
 
         Task<List<OrderSummaryResponse>> GetUserOrdersAsync(string userId);
 

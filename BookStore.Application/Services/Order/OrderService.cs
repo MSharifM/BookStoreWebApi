@@ -56,21 +56,24 @@ namespace BookStore.Application.Services.Order
             return result;
         }
 
-        public async Task ProcessingPaymentResultAsync(int orderId, bool isSuccess)
+        public async Task ProcessingPaymentResultAsync(PaymentGatewayRequest model)
         {
-            if (isSuccess)
+            if (model.IsSuccess)
             {
-                var isExistOrder = await _orderRepository.ChangeOrderStatusAsync(orderId, OrderStatus.Processing);
+                var isExistOrder = await _orderRepository.ChangeOrderStatusAsync(model.OrderId,
+                    [OrderStatus.Pending], OrderStatus.Processing);
                 if (isExistOrder)
                 {
-                    var userId = await _orderRepository.GetUserIdByOrderIdAsync(orderId);
+                    var userId = await _orderRepository.GetUserIdByOrderIdAsync(model.OrderId);
                     if (userId != null) await _cartRepository.ClearCartAsync(userId);
                 }
             }
             else
             {
-                await _orderRepository.ChangeOrderStatusAsync(orderId, OrderStatus.Failed);
-                await _orderRepository.ReturningBooksQuantityAsync(orderId);
+                var isExistOrder = await _orderRepository.ChangeOrderStatusAsync(model.OrderId,
+                    [OrderStatus.Pending], OrderStatus.Failed);
+                if (isExistOrder)
+                    await _orderRepository.ReturningBooksQuantityAsync(model.OrderId);
             }
         }
     }

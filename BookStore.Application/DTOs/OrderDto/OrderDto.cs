@@ -26,4 +26,11 @@ namespace BookStore.Application.DTOs.OrderDto
         public int Count { get; set; }
         public decimal TotalPrice { get; set; } // Count * price
     }
+
+    public class PaymentGatewayRequest
+    {
+        public int OrderId { get; set; }
+        public bool IsSuccess { get; set; }
+        // Add other properties
+    }
 }

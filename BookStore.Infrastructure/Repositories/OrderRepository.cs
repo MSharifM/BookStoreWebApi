@@ -59,10 +59,10 @@ namespace BookStore.Infrastructure.Repositories
             }
         }
 
-        public async Task<bool> ChangeOrderStatusAsync(int orderId, OrderStatus newStatus)
+        public async Task<bool> ChangeOrderStatusAsync(int orderId, List<OrderStatus> oldStatus, OrderStatus newStatus)
         {
             var result = await _context.Orders
-                .Where(o => o.OrderId == orderId)
+                .Where(o => o.OrderId == orderId && oldStatus.Contains(o.OrderStatus))
                 .ExecuteUpdateAsync(setters => setters
                     .SetProperty(o => o.OrderStatus, newStatus));
 
@@ -84,8 +84,10 @@ namespace BookStore.Infrastructure.Repositories
 
         public async Task ReturningBooksQuantityAsync(int orderId)
         {
+            OrderStatus[] returningStates = [OrderStatus.Failed, OrderStatus.Cancelled];
             var orderDetail = await GetOrderDetailAsync(orderId);
-            if (orderDetail is null)
+
+            if (orderDetail is null || !returningStates.Contains(orderDetail.Status))
                 return;
 
             var bookQuantities = orderDetail.OrderItems
@@ -96,7 +98,7 @@ namespace BookStore.Infrastructure.Repositories
                 var quantity = bookQuantities[bookId];
 
                 await _context.Books
-                    .Where(b => b.BookId == bookId && b.StockQuantity >= quantity)
+                    .Where(b => b.BookId == bookId)
                     .ExecuteUpdateAsync(setters => setters
                         .SetProperty(b => b.StockQuantity, b => b.StockQuantity + quantity)
                     );

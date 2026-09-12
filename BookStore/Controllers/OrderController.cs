@@ -2,6 +2,7 @@
 using BookStore.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using BookStore.Application.DTOs.OrderDto;
 
 namespace BookStore.Api.Controllers
 {
@@ -19,11 +20,8 @@ namespace BookStore.Api.Controllers
 
         // POST /api/order/submit-cart
         [HttpPost("submit-cart")]
-        public async Task<IActionResult> FinalizeOrder(CartDetailResponse model)
+        public async Task<IActionResult> FinalizeOrder()
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var result = await _orderService.FinalizeOrderAsync(UserId);
 
             if (!result)
@@ -34,9 +32,12 @@ namespace BookStore.Api.Controllers
 
         // POST /api/order
         [HttpPost]
-        public async Task<IActionResult> PaymentResult(int orderId, bool isSuccess)
+        public async Task<IActionResult> PaymentResult(PaymentGatewayRequest model)
         {
-            await _orderService.ProcessingPaymentResultAsync(orderId, isSuccess);
+            if (!ModelState.IsValid)
+                return NotFound();
+
+            await _orderService.ProcessingPaymentResultAsync(model);
             return Ok();
         }
 
