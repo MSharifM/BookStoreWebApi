@@ -10,7 +10,7 @@ namespace BookStore.Application.Interfaces.Repositories
 
         Task ReduceBookQuantityAsync(CartDetailResponse cartDetail);
 
-        Task<bool> ChangeOrderStatusAsync(int orderId, List<OrderStatus> oldStatus, OrderStatus newStatus);
+        Task<bool> TryUpdateOrderStatusAsync(int orderId, List<OrderStatus> oldStatus, OrderStatus newStatus);
 
         Task<string?> GetUserIdByOrderIdAsync(int orderId);
 
@@ -18,6 +18,8 @@ namespace BookStore.Application.Interfaces.Repositories
 
         Task<List<OrderSummaryResponse>> GetUserOrdersAsync(string userId);
 
-        Task<OrderDetailResponse?> GetOrderDetailAsync(int orderId);
+        Task<OrderDetailResponse?> GetOrderDetailAsync(int orderId, string? userId = null);
+
+        Task<OrderPaymentInfoResponse?> GetPendingOrderAsync(string userId);
     }
 }

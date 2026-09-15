@@ -1,8 +1,7 @@
-﻿using BookStore.Application.DTOs.CartDto;
+﻿using BookStore.Application.DTOs.OrderDto;
 using BookStore.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using BookStore.Application.DTOs.OrderDto;
 
 namespace BookStore.Api.Controllers
 {
@@ -22,10 +21,7 @@ namespace BookStore.Api.Controllers
         [HttpPost("submit-cart")]
         public async Task<IActionResult> FinalizeOrder()
         {
-            var result = await _orderService.FinalizeOrderAsync(UserId);
-
-            if (!result)
-                return NotFound();
+            await _orderService.FinalizeOrderAsync(UserId);
 
             return Ok();
         }
@@ -35,7 +31,7 @@ namespace BookStore.Api.Controllers
         public async Task<IActionResult> PaymentResult(PaymentGatewayRequest model)
         {
             if (!ModelState.IsValid)
-                return NotFound();
+                return BadRequest(ModelState);
 
             await _orderService.ProcessingPaymentResultAsync(model);
             return Ok();
@@ -54,10 +50,7 @@ namespace BookStore.Api.Controllers
         [HttpGet("{orderId:int}")]
         public async Task<IActionResult> GetOrderDetail(int orderId)
         {
-            var result = await _orderService.GetOrderDetailAsync(orderId);
-
-            if (result is null)
-                return NotFound();
+            var result = await _orderService.GetOrderDetailAsync(UserId, orderId);
 
             return Ok(result);
         }

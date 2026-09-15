@@ -1,4 +1,5 @@
 using System.Text;
+using BookStore.Api.Middlewares;
 using BookStore.Domain.Entities;
 using BookStore.Infrastructure.Data;
 using BookStore.Infrastructure.Identity;
@@ -107,6 +108,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<GlobalExceptionHandler>();
 
 app.MapControllers();
 

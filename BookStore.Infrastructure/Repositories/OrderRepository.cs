@@ -59,17 +59,14 @@ namespace BookStore.Infrastructure.Repositories
             }
         }
 
-        public async Task<bool> ChangeOrderStatusAsync(int orderId, List<OrderStatus> oldStatus, OrderStatus newStatus)
+        public async Task<bool> TryUpdateOrderStatusAsync(int orderId, List<OrderStatus> oldStatus, OrderStatus newStatus)
         {
             var result = await _context.Orders
                 .Where(o => o.OrderId == orderId && oldStatus.Contains(o.OrderStatus))
                 .ExecuteUpdateAsync(setters => setters
                     .SetProperty(o => o.OrderStatus, newStatus));
 
-            if (result != 0)
-                return true;
-
-            return false;
+            return result != 0;
         }
 
         public async Task<string?> GetUserIdByOrderIdAsync(int orderId)
@@ -122,10 +119,10 @@ namespace BookStore.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<OrderDetailResponse?> GetOrderDetailAsync(int orderId)
+        public async Task<OrderDetailResponse?> GetOrderDetailAsync(int orderId, string? userId = null)
         {
             var result = await _context.Orders
-                .Where(o => o.OrderId == orderId)
+                .Where(o => o.OrderId == orderId && (userId == null || o.UserId == userId))
                 .Select(o => new OrderDetailResponse()
                 {
                     OrderId = o.OrderId,
@@ -156,6 +153,19 @@ namespace BookStore.Infrastructure.Repositories
                 .ToDictionaryAsync(b => b.BookId, b => b.Price);
 
             return bookPrices;
+        }
+
+        public async Task<OrderPaymentInfoResponse?> GetPendingOrderAsync(string userId)
+        {
+            return await _context.Orders
+                .AsNoTracking()
+                .Where(o => o.UserId == userId && o.OrderStatus == OrderStatus.Pending)
+                .Select(o => new OrderPaymentInfoResponse()
+                {
+                    OrderId = o.OrderId,
+                    TotalPrice = o.OrderItems.Sum(oi => oi.Count * oi.UnitPrice)
+                })
+                .FirstOrDefaultAsync();
         }
     }
 }

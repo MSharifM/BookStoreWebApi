@@ -33,4 +33,10 @@ namespace BookStore.Application.DTOs.OrderDto
         public bool IsSuccess { get; set; }
         // Add other properties
     }
+
+    public class OrderPaymentInfoResponse
+    {
+        public int OrderId { get; set; }
+        public decimal TotalPrice { get; set; }
+    }
 }

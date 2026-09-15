@@ -18,6 +18,7 @@ namespace BookStore.Infrastructure.IoC
             service.AddScoped<IAccountService, AccountService>();
             service.AddScoped<IFileStorageService, FileStorageService>();
             service.AddScoped<IOrderService, OrderService>();
+            service.AddScoped<IUnitOfWorkService, UnitOfWorkService>();
             service.AddScoped<IDapperContext, DapperContext>();
 
             #endregion Services

@@ -4,12 +4,12 @@ namespace BookStore.Application.Interfaces.Services
 {
     public interface IOrderService
     {
-        Task<bool> FinalizeOrderAsync(string userId);
+        Task<OrderPaymentInfoResponse> FinalizeOrderAsync(string userId);
 
         Task ProcessingPaymentResultAsync(PaymentGatewayRequest model);
 
         Task<List<OrderSummaryResponse>> GetUserOrdersAsync(string userId);
 
-        Task<OrderDetailResponse?> GetOrderDetailAsync(int orderId);
+        Task<OrderDetailResponse> GetOrderDetailAsync(string userId, int orderId);
     }
 }
