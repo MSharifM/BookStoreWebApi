@@ -1,7 +1,6 @@
 ﻿using BookStore.Application.Interfaces.Repositories;
 using BookStore.Application.Interfaces.Services;
-using BookStore.Application.Services.Account;
-using BookStore.Application.Services.Order;
+using BookStore.Application.Services;
 using BookStore.Infrastructure.Repositories;
 using BookStore.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +18,7 @@ namespace BookStore.Infrastructure.IoC
             service.AddScoped<IFileStorageService, FileStorageService>();
             service.AddScoped<IOrderService, OrderService>();
             service.AddScoped<IUnitOfWorkService, UnitOfWorkService>();
+            service.AddScoped<IReviewService, ReviewService>();
             service.AddScoped<IDapperContext, DapperContext>();
 
             #endregion Services
@@ -34,6 +34,7 @@ namespace BookStore.Infrastructure.IoC
             service.AddScoped<IBookRepository, BookRepository>();
             service.AddScoped<IAddressRepository, AddressRepository>();
             service.AddScoped<IOrderRepository, OrderRepository>();
+            service.AddScoped<IReviewRepository, ReviewRepository>();
 
             #endregion Repositories
         }

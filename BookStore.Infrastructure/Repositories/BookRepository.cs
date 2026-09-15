@@ -1,11 +1,11 @@
 ﻿using BookStore.Application.Constants;
-using Microsoft.EntityFrameworkCore;
 using BookStore.Application.DTOs.BookDto;
 using BookStore.Application.DTOs.CategoryDto;
 using BookStore.Application.Interfaces.Repositories;
 using BookStore.Application.Interfaces.Services;
 using BookStore.Domain.Enums;
 using BookStore.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Dapper;
 
 namespace BookStore.Infrastructure.Repositories
@@ -241,34 +241,6 @@ namespace BookStore.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
 
             return bookDetail;
-        }
-
-        public async Task<List<ReviewBookResponse>> GetBookReviews(int bookId, int page = 1)
-        {
-            var step = 7;
-            var skip = (page - 1) * step;
-
-            var result = await _context.Reviews
-                .AsNoTracking()
-                .Where(r => r.BookId == bookId)
-                .OrderByDescending(r => r.CreateDate)
-                .ThenByDescending(r => r.ReviewId)
-                .Skip(skip)
-                .Take(step)
-                .Select(r => new ReviewBookResponse()
-                {
-                    UserName = r.User.UserName!,
-                    UserImage = FileStorageConstants.Paths.UserProfile + r.User.ImageProfile,
-                    Content = r.Content,
-                    Rate = r.Rate,
-                    CreateDate = r.CreateDate,
-                    ReviewId = r.ReviewId,
-                    Like = r.ReviewReactions.Count(rr => rr.IsLike),
-                    Dislike = r.ReviewReactions.Count(rr => !rr.IsLike)
-                })
-                .ToListAsync();
-
-            return result;
         }
     }
 }

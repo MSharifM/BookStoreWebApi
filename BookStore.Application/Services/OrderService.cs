@@ -4,7 +4,7 @@ using BookStore.Application.Interfaces.Repositories;
 using BookStore.Application.Interfaces.Services;
 using BookStore.Domain.Enums;
 
-namespace BookStore.Application.Services.Order
+namespace BookStore.Application.Services
 {
     public class OrderService : IOrderService
     {

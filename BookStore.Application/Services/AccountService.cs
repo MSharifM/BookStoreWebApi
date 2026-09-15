@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using BookStore.Application.Constants;
+﻿using BookStore.Application.Constants;
 using BookStore.Application.DTOs.AccountDto;
 using BookStore.Application.DTOs.UserProfileDto;
 using BookStore.Application.Interfaces.Repositories;
@@ -8,7 +7,7 @@ using BookStore.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
-namespace BookStore.Application.Services.Account
+namespace BookStore.Application.Services
 {
     public class AccountService : IAccountService
     {

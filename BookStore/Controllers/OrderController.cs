@@ -2,11 +2,13 @@
 using BookStore.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookStore.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "User")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;

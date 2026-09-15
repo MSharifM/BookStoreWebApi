@@ -1,6 +1,4 @@
-﻿using System.Security.Principal;
-
-namespace BookStore.Application.DTOs.BookDto
+﻿namespace BookStore.Application.DTOs.BookDto
 {
     public class BookSummaryResponse
     {
@@ -38,17 +36,5 @@ namespace BookStore.Application.DTOs.BookDto
         public List<CategoryDto.CategoryDto> Category { get; set; } = new();
 
         public List<string> BookImages { get; set; } = new();
-    }
-
-    public class ReviewBookResponse
-    {
-        public int ReviewId { get; set; }
-        public float Rate { get; set; }
-        public string Content { get; set; } = null!;
-        public string UserName { get; set; } = null!;
-        public string UserImage { get; set; } = null!;
-        public DateTime CreateDate { get; set; }
-        public int Like { get; set; }
-        public int Dislike { get; set; }
     }
 }

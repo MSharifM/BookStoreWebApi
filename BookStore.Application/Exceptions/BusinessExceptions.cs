@@ -34,4 +34,11 @@
         {
         }
     }
+
+    public class ReviewNotFoundException : Exception
+    {
+        public ReviewNotFoundException() : base("نظر یافت نشد.")
+        {
+        }
+    }
 }

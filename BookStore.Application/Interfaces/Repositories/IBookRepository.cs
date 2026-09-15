@@ -13,7 +13,5 @@ namespace BookStore.Application.Interfaces.Repositories
         //TODO: best discount
 
         Task<BookDetailResponse?> GetBookDetailAsync(int bookId);
-
-        Task<List<ReviewBookResponse>> GetBookReviews(int bookId, int page = 1);
     }
 }

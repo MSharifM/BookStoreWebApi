@@ -25,17 +25,5 @@ namespace BookStore.Api.Controllers
 
             return Ok(result);
         }
-
-        // GET /api/book/{bookId}/reviews
-        [HttpGet("{bookId:int}/reviews")]
-        public async Task<IActionResult> GetBookReviews(int bookId, [FromQuery] int page = 1)
-        {
-            if (page < 1)
-                return BadRequest("Page must be greater than or equal to 1");
-
-            var result = await _bookRepository.GetBookReviews(bookId, page);
-
-            return Ok(result);
-        }
     }
 }
