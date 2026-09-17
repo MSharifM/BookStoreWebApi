@@ -167,5 +167,15 @@ namespace BookStore.Infrastructure.Repositories
                 })
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<bool> IsUserBoughtBookAsync(int bookId, string userId)
+        {
+            var result = await _context.Orders
+                .AsNoTracking()
+                .Where(o => o.UserId == userId && o.OrderStatus == OrderStatus.Shipped)
+                .AnyAsync(o => o.OrderItems.Any(oi => oi.BookId == bookId));
+
+            return result;
+        }
     }
 }

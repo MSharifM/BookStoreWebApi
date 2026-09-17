@@ -87,6 +87,11 @@ namespace BookStore.Application.Services
             return result;
         }
 
+        public async Task<bool> IsUserBoughtBookAsync(int bookId, string userId)
+        {
+            return await _orderRepository.IsUserBoughtBookAsync(bookId, userId);
+        }
+
         public async Task ProcessingPaymentResultAsync(PaymentGatewayRequest model)
         {
             await _unitOfWorkService.BeginTransactionAsync();

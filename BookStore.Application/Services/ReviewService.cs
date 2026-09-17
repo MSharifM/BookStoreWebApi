@@ -8,10 +8,12 @@ namespace BookStore.Application.Services
     public class ReviewService : IReviewService
     {
         private readonly IReviewRepository _reviewRepository;
+        private readonly IOrderService _orderService;
 
-        public ReviewService(IReviewRepository reviewRepository)
+        public ReviewService(IReviewRepository reviewRepository, IOrderService orderService)
         {
             _reviewRepository = reviewRepository;
+            _orderService = orderService;
         }
 
         public async Task<List<ReviewBookResponse>> GetBookReviewsAsync(int bookId, int page = 1, string? userId = null)
@@ -23,7 +25,10 @@ namespace BookStore.Application.Services
 
         public async Task AddReviewAsync(string userId, AddReviewRequest model)
         {
-            // TODO: Check for duplicate review
+            var isUserBoughtBook = await _orderService.IsUserBoughtBookAsync(model.BookId, userId);
+            if (!isUserBoughtBook)
+                throw new BookNotPurchasedException();
+
             await _reviewRepository.CreateReviewAsync(userId, model);
         }
 
@@ -47,6 +52,11 @@ namespace BookStore.Application.Services
             {
                 await _reviewRepository.ToggleReactionAsync(userId, model.ReviewId);
             }
+        }
+
+        public async Task DeleteReviewAsync(int reviewId)
+        {
+            await _reviewRepository.DeleteReviewAsync(reviewId);
         }
     }
 }

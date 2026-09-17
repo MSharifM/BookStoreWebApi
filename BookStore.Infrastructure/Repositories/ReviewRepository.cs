@@ -38,13 +38,13 @@ namespace BookStore.Infrastructure.Repositories
                     ReviewId = r.ReviewId,
                     Like = r.ReviewReactions.Count(rr => rr.IsLike),
                     Dislike = r.ReviewReactions.Count(rr => !rr.IsLike),
-                    UserReaction = userId == null ? null : new ReactionDto()
-                    {
-                        IsLike = r.ReviewReactions
-                            .Where(rr => rr.UserId == userId)
-                            .Select(rr => rr.IsLike)
-                            .FirstOrDefault()
-                    }
+                    UserReaction = userId == null ? null : r.ReviewReactions
+                                                                .Where(rr => rr.UserId == userId)
+                                                                .Select(rr => new ReactionDto
+                                                                {
+                                                                    IsLike = rr.IsLike
+                                                                })
+                                                                .FirstOrDefault()
                 })
                 .ToListAsync();
 
@@ -77,6 +77,7 @@ namespace BookStore.Infrastructure.Repositories
         public async Task<bool> IsReviewExistAsync(int reviewId)
         {
             var result = await _context.Reviews
+                .AsNoTracking()
                 .AnyAsync(r => r.ReviewId == reviewId);
 
             return result;
@@ -107,6 +108,7 @@ namespace BookStore.Infrastructure.Repositories
         public async Task<bool?> IsUserLikedOrDislikedAsync(string userId, int reviewId)
         {
             var result = await _context.ReviewReactions
+                .AsNoTracking()
                 .Where(rr => rr.ReviewId == reviewId && rr.UserId == userId)
                 .FirstOrDefaultAsync();
 

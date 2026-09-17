@@ -43,7 +43,7 @@ namespace BookStore.Api.Controllers
 
             await _reviewService.AddReviewAsync(userId, model);
 
-            return Ok();
+            return Created();
         }
 
         // POST /api/review/reaction
@@ -57,6 +57,16 @@ namespace BookStore.Api.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
             await _reviewService.AddOrUpdateReactionAsync(userId, model);
+
+            return Ok();
+        }
+
+        // DELETE /api/review/{reviewId}
+        [HttpPost("{reviewId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteReview(int reviewId)
+        {
+            await _reviewService.DeleteReviewAsync(reviewId);
 
             return Ok();
         }

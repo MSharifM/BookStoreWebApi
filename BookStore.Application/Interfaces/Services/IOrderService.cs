@@ -11,5 +11,7 @@ namespace BookStore.Application.Interfaces.Services
         Task<List<OrderSummaryResponse>> GetUserOrdersAsync(string userId);
 
         Task<OrderDetailResponse> GetOrderDetailAsync(string userId, int orderId);
+
+        Task<bool> IsUserBoughtBookAsync(int bookId, string userId);
     }
 }

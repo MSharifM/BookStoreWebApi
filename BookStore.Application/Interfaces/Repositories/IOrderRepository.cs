@@ -21,5 +21,7 @@ namespace BookStore.Application.Interfaces.Repositories
         Task<OrderDetailResponse?> GetOrderDetailAsync(int orderId, string? userId = null);
 
         Task<OrderPaymentInfoResponse?> GetPendingOrderAsync(string userId);
+
+        Task<bool> IsUserBoughtBookAsync(int bookId, string userId);
     }
 }

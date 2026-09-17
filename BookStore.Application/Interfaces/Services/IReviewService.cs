@@ -9,5 +9,7 @@ namespace BookStore.Application.Interfaces.Services
         public Task AddReviewAsync(string userId, AddReviewRequest model);
 
         public Task AddOrUpdateReactionAsync(string userId, ReactionRequest model);
+
+        public Task DeleteReviewAsync(int reviewId);
     }
 }

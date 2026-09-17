@@ -1,44 +1,38 @@
 ﻿namespace BookStore.Application.Exceptions
 {
-    public class InsufficientStockException : Exception
+    public abstract class AppException(string message, ErrorCode code) : Exception(message)
     {
-        public InsufficientStockException() : base("موجودی کتاب‌های سبد خرید کافی نیست.")
-        {
-        }
+        public ErrorCode Code { get; } = code;
     }
 
-    public class EmptyCartException : Exception
-    {
-        public EmptyCartException() : base("سبد خرید شما خالی است.")
-        {
-        }
-    }
+    public class InsufficientStockException()
+        : AppException("موجودی کتاب‌های سبد خرید کافی نیست.", ErrorCode.BadRequest);
 
-    public class OrderNotFoundException : Exception
-    {
-        public OrderNotFoundException() : base("سفارش مورد نظر یافت نشد.")
-        {
-        }
-    }
+    public class EmptyCartException()
+        : AppException("سبد خرید شما خالی است.", ErrorCode.BadRequest);
 
-    public class AddressNotFoundException : Exception
-    {
-        public AddressNotFoundException() : base("لطفاً ابتدا آدرس پیش‌فرض خود را ثبت کنید.")
-        {
-        }
-    }
+    public class OrderNotFoundException()
+        : AppException("سفارش مورد نظر یافت نشد.", ErrorCode.NotFound);
 
-    public class UserNotFoundException : Exception
-    {
-        public UserNotFoundException() : base("کاربر مورد نظر یافت نشد.")
-        {
-        }
-    }
+    public class AddressNotFoundException()
+        : AppException("لطفاً ابتدا آدرس پیش‌فرض خود را ثبت کنید.", ErrorCode.BadRequest);
 
-    public class ReviewNotFoundException : Exception
+    public class UserNotFoundException()
+        : AppException("کاربر مورد نظر یافت نشد.", ErrorCode.NotFound);
+
+    public class ReviewNotFoundException()
+        : AppException("نظر یافت نشد.", ErrorCode.NotFound);
+
+    public class BookNotPurchasedException()
+        : AppException("برای نظر دادن باید کتاب را خریداری کرده باشید.", ErrorCode.Forbidden);
+
+    public enum ErrorCode
     {
-        public ReviewNotFoundException() : base("نظر یافت نشد.")
-        {
-        }
+        BadRequest = 1,
+        NotFound = 2,
+        Forbidden = 3,
+        Unauthorized = 4,
+        Conflict = 5,
+        InternalServerError = 6
     }
 }
