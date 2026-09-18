@@ -4,8 +4,8 @@ namespace BookStore.Application.Interfaces.Services
 {
     public interface IFileStorageService
     {
-        Task<string> SaveImageAsync(FileDataDto file, string folderName);
+        Task<string> SaveFileAsync(FileDataDto file, string folderName, string[] extensions);
 
-        void DeleteImage(string fileName, string folderName);
+        void DeleteFile(string fileName, string folderName);
     }
 }

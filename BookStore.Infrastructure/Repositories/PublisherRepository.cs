@@ -1,9 +1,11 @@
 ﻿using BookStore.Application.Constants;
+using BookStore.Application.DTOs.BookDto;
 using BookStore.Application.DTOs.PublisherDto;
 using BookStore.Application.Interfaces.Repositories;
 using BookStore.Application.Interfaces.Services;
 using BookStore.Infrastructure.Data;
 using Dapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.Infrastructure.Repositories
 {
@@ -11,14 +13,16 @@ namespace BookStore.Infrastructure.Repositories
     {
         private readonly IDapperContext _dapperContext;
         private readonly ApplicationDbContext _context;
+        private readonly IBookRepository _bookRepository;
 
-        public PublisherRepository(IDapperContext dapperContext, ApplicationDbContext context)
+        public PublisherRepository(IDapperContext dapperContext, ApplicationDbContext context, IBookRepository bookRepository)
         {
             _dapperContext = dapperContext;
             _context = context;
+            _bookRepository = bookRepository;
         }
 
-        public async Task<List<PublisherSummaryResponse>> GetBestSellerPublisher()
+        public async Task<List<PublisherSummaryResponse>> GetBestSellersPublisherAsync()
         {
             var query = """
                         SELECT TOP (10)
@@ -49,6 +53,23 @@ namespace BookStore.Infrastructure.Repositories
                 query, new { ImagePath = FileStorageConstants.Paths.UserProfile });
 
             return result.ToList();
+        }
+
+        public async Task<List<BookSummaryResponse>> GetPublisherBooksAsync(int publisherId, string? bookName = null, string? ISBN = null, int page = 1)
+        {
+            var result = await _bookRepository.GetNewestBooksAsync(publisherId, page);
+
+            return result;
+        }
+
+        public async Task<int> GetPublisherIdAsync(string userId)
+        {
+            var result = await _context.Publishers
+                .Where(p => p.UserId == userId)
+                .Select(p => p.PublisherId)
+                .FirstOrDefaultAsync();
+
+            return result;
         }
     }
 }

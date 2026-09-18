@@ -1,8 +1,8 @@
 ﻿using BookStore.Application.DTOs.BookDto;
 
-namespace BookStore.Application.Interfaces.Repositories
+namespace BookStore.Application.Interfaces.Services
 {
-    public interface IBookRepository
+    public interface IBookService
     {
         Task<List<BookSummaryResponse>> GetNewestBooksAsync(int? publisherId = null, int page = 1, int step = 15);
 
@@ -16,10 +16,8 @@ namespace BookStore.Application.Interfaces.Repositories
 
         //TODO: get all books by filters
 
-        Task<bool> IsExitsISBNAsync(string ISBN);
+        Task AddBookAsync(string userId, AddBookRequest model);
 
-        Task<int> CreateBookAsync(int publisherId, AddBookRequest model);
-
-        Task DeleteBookAsync(int publisherId, int bookId);
+        Task DeleteBookAsync(string userId, int bookId);
     }
 }

@@ -14,7 +14,7 @@ namespace BookStore.Infrastructure.Services
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task<string> SaveImageAsync(FileDataDto file, string folderName)
+        public async Task<string> SaveFileAsync(FileDataDto file, string folderName, string[] extensions)
         {
             var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, folderName);
 
@@ -24,8 +24,7 @@ namespace BookStore.Infrastructure.Services
             }
             var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
-            if (!Array.Exists(FileStorageConstants.AllowedExtensions.Images
-                    , ext => ext == extension))
+            if (!Array.Exists(extensions, ext => ext == extension))
             {
                 throw new InvalidOperationException("فرمت فایل مجاز نیست.");
             }
@@ -38,7 +37,7 @@ namespace BookStore.Infrastructure.Services
             return uniqueFileName;
         }
 
-        public void DeleteImage(string fileName, string folderName)
+        public void DeleteFile(string fileName, string folderName)
         {
             if (fileName != FileStorageConstants.Defaults.UserProfileImage)
             {

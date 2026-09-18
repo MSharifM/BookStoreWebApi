@@ -20,6 +20,8 @@ namespace BookStore.Infrastructure.IoC
             service.AddScoped<IUnitOfWorkService, UnitOfWorkService>();
             service.AddScoped<IReviewService, ReviewService>();
             service.AddScoped<IDapperContext, DapperContext>();
+            service.AddScoped<IPublisherService, PublisherService>();
+            service.AddScoped<IBookService, BookService>();
 
             #endregion Services
 

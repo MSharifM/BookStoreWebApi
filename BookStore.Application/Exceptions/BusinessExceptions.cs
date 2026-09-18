@@ -26,6 +26,9 @@
     public class BookNotPurchasedException()
         : AppException("برای نظر دادن باید کتاب را خریداری کرده باشید.", ErrorCode.Forbidden);
 
+    public class DuplicateISBNException()
+        : AppException("برای نظر دادن باید کتاب را خریداری کرده باشید.", ErrorCode.Conflict);
+
     public enum ErrorCode
     {
         BadRequest = 1,

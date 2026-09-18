@@ -1,6 +1,7 @@
 ﻿using BookStore.Application.Constants;
 using BookStore.Application.DTOs.AccountDto;
 using BookStore.Application.DTOs.UserProfileDto;
+using BookStore.Application.Exceptions;
 using BookStore.Application.Interfaces.Repositories;
 using BookStore.Application.Interfaces.Services;
 using BookStore.Domain.Entities;
@@ -149,12 +150,11 @@ namespace BookStore.Application.Services
             return true;
         }
 
-        public async Task<IdentityResult?> EditUserProfileAsync(string userId, EditProfileRequest newModel)
+        public async Task<IdentityResult> EditUserProfileAsync(string userId, EditProfileRequest newModel)
         {
             var user = await _userManager.FindByIdAsync(userId);
-
             if (user is null)
-                return null;
+                throw new UserNotFoundException();
 
             user.UserName = newModel.UserName;
             user.Email = newModel.Email;
@@ -162,9 +162,10 @@ namespace BookStore.Application.Services
             if (newModel.ImageData != null)
             {
                 // Save new image
-                var fileName = await _fileStorageService.SaveImageAsync(newModel.ImageData, FileStorageConstants.Paths.UserProfile);
+                var fileName = await _fileStorageService.SaveFileAsync(newModel.ImageData,
+                    FileStorageConstants.Paths.UserProfile, FileStorageConstants.AllowedExtensions.Images);
                 // Delete old image
-                _fileStorageService.DeleteImage(user.ImageProfile, FileStorageConstants.Paths.UserProfile);
+                _fileStorageService.DeleteFile(user.ImageProfile, FileStorageConstants.Paths.UserProfile);
                 user.ImageProfile = fileName;
             }
 

@@ -1,5 +1,6 @@
 ﻿using BookStore.Application.DTOs.BookDto;
 using BookStore.Application.Interfaces.Repositories;
+using BookStore.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.Api.Controllers
@@ -10,13 +11,13 @@ namespace BookStore.Api.Controllers
     {
         private readonly IBookRepository _bookRepository;
         private readonly IBannerRepository _bannerRepository;
-        private readonly IPublisherRepository _publisherRepository;
+        private readonly IPublisherService _publisherService;
 
-        public HomeController(IBookRepository bookRepository, IBannerRepository bannerRepository, IPublisherRepository publisherRepository)
+        public HomeController(IBookRepository bookRepository, IBannerRepository bannerRepository, IPublisherService publisherService)
         {
             _bookRepository = bookRepository;
             _bannerRepository = bannerRepository;
-            _publisherRepository = publisherRepository;
+            _publisherService = publisherService;
         }
 
         [HttpGet("newest")]
@@ -53,7 +54,7 @@ namespace BookStore.Api.Controllers
         [HttpGet("bestsellers-publisher")]
         public async Task<IActionResult> GetBestSellerPublisher()
         {
-            var result = await _publisherRepository.GetBestSellerPublisher();
+            var result = await _publisherService.GetBestSellersPublisher();
 
             return Ok(result);
         }

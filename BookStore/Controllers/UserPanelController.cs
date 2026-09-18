@@ -1,11 +1,11 @@
-﻿using BookStore.Application.DTOs.CommonDto;
-using BookStore.Application.DTOs.UserProfileDto;
+﻿using BookStore.Application.DTOs.UserProfileDto;
 using BookStore.Application.Interfaces.Repositories;
 using BookStore.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using BookStore.Application.DTOs.AccountDto;
+using BookStore.Api.CommonMethods;
 
 namespace BookStore.Api.Controllers
 {
@@ -60,7 +60,7 @@ namespace BookStore.Api.Controllers
                 return BadRequest("حجم فایل نباید بیشتر از ۵ مگابایت باشد.");
 
             if (file != null)
-                model.ImageData = await ConvertIFormFileToDto(file);
+                model.ImageData = await Convertor.ConvertIFromFileToFileDataDto(file);
 
             var result = await _accountService.EditUserProfileAsync(UserId, model);
 
@@ -89,22 +89,6 @@ namespace BookStore.Api.Controllers
                 return Ok(true);
 
             return BadRequest(result.Errors);
-        }
-
-        private async Task<FileDataDto> ConvertIFormFileToDto(IFormFile file)
-        {
-            // Convert IFormFile to byte[]
-            using var memoryStream = new MemoryStream();
-            await file.CopyToAsync(memoryStream);
-
-            // Create Dto
-            var fileData = new FileDataDto(
-                Content: memoryStream.ToArray(),
-                FileName: file.FileName,
-                ContentType: file.ContentType
-            );
-
-            return fileData;
         }
     }
 }
