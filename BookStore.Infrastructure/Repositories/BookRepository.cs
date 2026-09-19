@@ -19,7 +19,6 @@ namespace BookStore.Infrastructure.Repositories
         public BookRepository(ApplicationDbContext context, IDapperContext dapperContext)
         {
             _context = context;
-            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             _dapperContext = dapperContext;
         }
 

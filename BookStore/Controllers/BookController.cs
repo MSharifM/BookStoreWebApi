@@ -61,6 +61,7 @@ namespace BookStore.Api.Controllers
             return Created();
         }
 
+        // DELETE /api/book/{bookId}
         [HttpDelete("{bookId:int}")]
         [Authorize(Roles = "Publisher")]
         public async Task<IActionResult> AddBook(int bookId)

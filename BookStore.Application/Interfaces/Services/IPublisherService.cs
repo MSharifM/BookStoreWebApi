@@ -7,6 +7,10 @@ namespace BookStore.Application.Interfaces.Services
     {
         Task<List<PublisherSummaryResponse>> GetBestSellersPublisher();
 
-        Task<List<BookSummaryResponse>> GetPublisherBooksAsync(int publisherId, string? bookName = null, string? ISBN = null, int page = 1);
+        Task<List<BookSummaryResponse>> GetPublisherBooksAsync(string userId, string? bookName = null, string? ISBN = null, int page = 1);
+
+        Task<DashboardReportResponse> GetDashboardReportAsync(string userId);
+
+        Task<List<MonthlyChartIncomeResponse>> GetMonthlyChartAsync(string userId, int? year = null, int? month = null);
     }
 }

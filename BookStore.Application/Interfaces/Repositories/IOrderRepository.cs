@@ -1,5 +1,6 @@
 ﻿using BookStore.Application.DTOs.CartDto;
 using BookStore.Application.DTOs.OrderDto;
+using BookStore.Application.DTOs.PublisherDto;
 using BookStore.Domain.Enums;
 
 namespace BookStore.Application.Interfaces.Repositories
@@ -23,5 +24,9 @@ namespace BookStore.Application.Interfaces.Repositories
         Task<OrderPaymentInfoResponse?> GetPendingOrderAsync(string userId);
 
         Task<bool> IsUserBoughtBookAsync(int bookId, string userId);
+
+        Task<(int TotalSold, decimal TotalIncome)> GetPublisherSalesSummaryAsync(int publisherId);
+
+        Task<List<MonthlyChartIncomeResponse>> GetMonthlyPublisherIncomeAsync(int publisherId, DateTime fromDate, DateTime toDate);
     }
 }

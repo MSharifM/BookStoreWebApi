@@ -1,10 +1,12 @@
 ﻿using BookStore.Application.Constants;
 using BookStore.Application.DTOs.CartDto;
 using BookStore.Application.DTOs.OrderDto;
+using BookStore.Application.DTOs.PublisherDto;
 using BookStore.Application.Interfaces.Repositories;
 using BookStore.Domain.Entities;
 using BookStore.Domain.Enums;
 using BookStore.Infrastructure.Data;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.Infrastructure.Repositories
@@ -174,6 +176,40 @@ namespace BookStore.Infrastructure.Repositories
                 .AsNoTracking()
                 .Where(o => o.UserId == userId && o.OrderStatus == OrderStatus.Shipped)
                 .AnyAsync(o => o.OrderItems.Any(oi => oi.BookId == bookId));
+
+            return result;
+        }
+
+        public async Task<(int TotalSold, decimal TotalIncome)> GetPublisherSalesSummaryAsync(int publisherId)
+        {
+            var result = await _context.OrderItems
+                .AsNoTracking()
+                .Where(oi => oi.Order.OrderStatus == OrderStatus.Shipped
+                             && oi.Book.PublisherId == publisherId)
+                .GroupBy(_ => 1)
+                .Select(g => new
+                {
+                    TotalSold = g.Sum(oi => oi.Count),
+                    TotalIncome = g.Sum(oi => oi.Count * oi.UnitPrice)
+                })
+                .FirstOrDefaultAsync();
+
+            return result is null ? (0, 0)
+                : (result.TotalSold, result.TotalIncome);
+        }
+
+        public async Task<List<MonthlyChartIncomeResponse>> GetMonthlyPublisherIncomeAsync(int publisherId, DateTime fromDate, DateTime toDate)
+        {
+            var result = await _context.OrderItems
+                .AsNoTracking()
+                .Where(oi => oi.Order.OrderStatus == OrderStatus.Shipped
+                             && oi.Book.PublisherId == publisherId
+                             && oi.Order.CreateDate >= fromDate
+                             && oi.Order.CreateDate < toDate)
+                .GroupBy(oi => new { oi.Order.CreateDate.Year, oi.Order.CreateDate.Month })
+                .Select(g => new MonthlyChartIncomeResponse(
+                    g.Key.Year, g.Key.Month, g.Sum(oi => oi.Count * oi.UnitPrice)))
+                .ToListAsync();
 
             return result;
         }

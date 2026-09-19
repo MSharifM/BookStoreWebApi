@@ -13,13 +13,11 @@ namespace BookStore.Infrastructure.Repositories
     {
         private readonly IDapperContext _dapperContext;
         private readonly ApplicationDbContext _context;
-        private readonly IBookRepository _bookRepository;
 
-        public PublisherRepository(IDapperContext dapperContext, ApplicationDbContext context, IBookRepository bookRepository)
+        public PublisherRepository(IDapperContext dapperContext, ApplicationDbContext context)
         {
             _dapperContext = dapperContext;
             _context = context;
-            _bookRepository = bookRepository;
         }
 
         public async Task<List<PublisherSummaryResponse>> GetBestSellersPublisherAsync()
@@ -55,11 +53,9 @@ namespace BookStore.Infrastructure.Repositories
             return result.ToList();
         }
 
-        public async Task<List<BookSummaryResponse>> GetPublisherBooksAsync(int publisherId, string? bookName = null, string? ISBN = null, int page = 1)
+        public Task<List<BookSummaryResponse>> GetPublisherBooksAsync(int publisherId, string? bookName = null, string? ISBN = null, int page = 1)
         {
-            var result = await _bookRepository.GetNewestBooksAsync(publisherId, page);
-
-            return result;
+            throw new NotImplementedException();
         }
 
         public async Task<int> GetPublisherIdAsync(string userId)
@@ -68,6 +64,15 @@ namespace BookStore.Infrastructure.Repositories
                 .Where(p => p.UserId == userId)
                 .Select(p => p.PublisherId)
                 .FirstOrDefaultAsync();
+
+            return result;
+        }
+
+        public async Task<int> GetCountPublisherBookAsync(int publisherId)
+        {
+            var result = await _context.Books
+                .AsNoTracking()
+                .CountAsync(b => b.PublisherId == publisherId);
 
             return result;
         }

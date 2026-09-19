@@ -6,4 +6,8 @@
         public string PublisherName { get; set; } = null!;
         public string PublisherImage { get; set; } = null!;
     }
+
+    public record DashboardReportResponse(int CountBooks, int CountSalesBook, decimal TotalIncome);
+
+    public record MonthlyChartIncomeResponse(int Year, int Month, decimal Income);
 }
