@@ -39,9 +39,11 @@ namespace BookStore.Api.Controllers
 
         // GET: /api/publisherPanel/myBooks
         [HttpGet("myBooks")]
-        public async Task<IActionResult> GetPublisherBooks()
+        public async Task<IActionResult> GetPublisherBooks(string? bookName = null, string? isbn = null, int page = 1)
         {
-            throw new NotImplementedException();
+            var result = await _publisherService.GetPublisherBooksAsync(UserId, bookName, isbn, page);
+
+            return Ok(result);
         }
     }
 }

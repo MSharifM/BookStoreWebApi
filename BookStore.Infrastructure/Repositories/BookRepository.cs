@@ -37,7 +37,8 @@ namespace BookStore.Infrastructure.Repositories
                                          b.Price,
                                          b.StockQuantity,
                                          b.PublisherId,
-                                         b.CreateDate
+                                         b.CreateDate,
+                                         b.PublicationYear
                                      FROM Books AS b
                                      WHERE (@PublisherId IS NULL OR b.PublisherId = @PublisherId)
                                  )
@@ -46,6 +47,7 @@ namespace BookStore.Infrastructure.Repositories
                                      b.Name,
                                      b.Price,
                                      b.StockQuantity,
+                                     b.PublicationYear,
                                      CONCAT(@ImagePath, bi.ImageName) AS BookImage,
                                      authors.AuthorNames,
                                      ISNULL(reviews.AverageRate, 0) AS Rate
@@ -122,7 +124,8 @@ namespace BookStore.Infrastructure.Repositories
                                    b.Name,
                                    b.Price,
                                    b.StockQuantity,
-                                   b.PublisherId
+                                   b.PublisherId,
+                                   b.PublicationYear
                                FROM Books AS b
                                WHERE (@PublisherId IS NULL OR b.PublisherId = @PublisherId)
                            )
@@ -205,7 +208,8 @@ namespace BookStore.Infrastructure.Repositories
                                    b.Name,
                                    b.Price,
                                    b.StockQuantity,
-                                   b.PublisherId
+                                   b.PublisherId,
+                                   b.PublicationYear
                                FROM Books AS b
                                WHERE (@PublisherId IS NULL OR b.PublisherId = @PublisherId)
                            )

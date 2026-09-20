@@ -1,5 +1,4 @@
 ﻿using BookStore.Application.Constants;
-using BookStore.Application.DTOs.BookDto;
 using BookStore.Application.DTOs.PublisherDto;
 using BookStore.Application.Interfaces.Repositories;
 using BookStore.Application.Interfaces.Services;
@@ -53,14 +52,10 @@ namespace BookStore.Infrastructure.Repositories
             return result.ToList();
         }
 
-        public Task<List<BookSummaryResponse>> GetPublisherBooksAsync(int publisherId, string? bookName = null, string? ISBN = null, int page = 1)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<int> GetPublisherIdAsync(string userId)
         {
             var result = await _context.Publishers
+                .AsNoTracking()
                 .Where(p => p.UserId == userId)
                 .Select(p => p.PublisherId)
                 .FirstOrDefaultAsync();

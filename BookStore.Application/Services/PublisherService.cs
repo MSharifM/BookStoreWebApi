@@ -9,13 +9,15 @@ namespace BookStore.Application.Services
     {
         private readonly IPublisherRepository _publisherRepository;
         private readonly IOrderRepository _orderRepository;
+        private readonly IBookRepository _bookRepository;
 
         private async Task<int> PublisherId(string userId) => await _publisherRepository.GetPublisherIdAsync(userId);
 
-        public PublisherService(IPublisherRepository publisherRepository, IOrderRepository orderRepository)
+        public PublisherService(IPublisherRepository publisherRepository, IOrderRepository orderRepository, IBookRepository bookRepository)
         {
             _publisherRepository = publisherRepository;
             _orderRepository = orderRepository;
+            _bookRepository = bookRepository;
         }
 
         public async Task<List<PublisherSummaryResponse>> GetBestSellersPublisher()
@@ -27,8 +29,8 @@ namespace BookStore.Application.Services
 
         public async Task<List<BookSummaryResponse>> GetPublisherBooksAsync(string userId, string? bookName = null, string? ISBN = null, int page = 1)
         {
-            var result = await _publisherRepository.GetPublisherBooksAsync(
-                await PublisherId(userId), bookName, ISBN, page);
+            var result = await _bookRepository.GetNewestBooksAsync(
+                await PublisherId(userId), page);
 
             return result;
         }

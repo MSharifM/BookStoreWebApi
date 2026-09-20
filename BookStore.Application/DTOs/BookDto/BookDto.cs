@@ -8,6 +8,7 @@ namespace BookStore.Application.DTOs.BookDto
         public string Name { get; set; } = null!;
         public string BookImage { get; set; } = null!;
         public int StockQuantity { get; set; }
+        public int PublicationYear { get; set; }
         public decimal Price { get; set; }
         public string AuthorNames { get; set; } = null!;
         public double Rate { get; set; }
