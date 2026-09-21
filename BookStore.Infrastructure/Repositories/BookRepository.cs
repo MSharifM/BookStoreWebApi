@@ -22,9 +22,10 @@ namespace BookStore.Infrastructure.Repositories
             _dapperContext = dapperContext;
         }
 
-        #region HomePage
+        #region Search and filter books
 
-        public async Task<List<BookSummaryResponse>> GetNewestBooksAsync(int? publisherId = null, int page = 1, int step = 15)
+        public async Task<List<BookSummaryResponse>> GetNewestBooksAsync(int sortBy, FilterSearchBookRequest model,
+            int? publisherId = null, int page = 1, int step = 15)
         {
             const string query = """
                                  DECLARE @Offset INT = (@Page - 1) * @Step;
@@ -32,15 +33,38 @@ namespace BookStore.Infrastructure.Repositories
                                  WITH FilteredBooks AS
                                  (
                                      SELECT
-                                         b.BookId,
-                                         b.Name,
-                                         b.Price,
-                                         b.StockQuantity,
-                                         b.PublisherId,
-                                         b.CreateDate,
-                                         b.PublicationYear
+                                         b.BookId, b.Name, b.Price, b.StockQuantity,
+                                         b.PublisherId, b.CreateDate, b.PublicationYear
                                      FROM Books AS b
-                                     WHERE (@PublisherId IS NULL OR b.PublisherId = @PublisherId)
+                                     WHERE 1 = 1
+                                       AND (@Name IS NULL OR @Name = '' OR b.Name LIKE N'%' + @Name + N'%')
+                                       AND (@ISBN IS NULL OR @ISBN = '' OR b.ISBN LIKE N'%' + @ISBN + N'%')
+                                       AND (@FromPrice IS NULL OR b.Price >= @FromPrice)
+                                       AND (@ToPrice   IS NULL OR b.Price <= @ToPrice)
+                                       AND (@IsExist = 0 OR b.StockQuantity > 0)
+
+                                       AND (@PublisherIds IS NULL OR @PublisherIds = '' OR b.PublisherId IN (
+                                             SELECT CAST(value AS INT) FROM STRING_SPLIT(@PublisherIds, ',')))
+
+                                       AND (@CategoryIds IS NULL OR @CategoryIds = '' OR EXISTS (
+                                             SELECT 1 FROM BookCategories bc
+                                             WHERE bc.BookId = b.BookId
+                                               AND bc.CategoryId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@CategoryIds, ','))))
+
+                                       AND (@WriterIds IS NULL OR @WriterIds = '' OR EXISTS (
+                                             SELECT 1 FROM BookAuthors ba
+                                             WHERE ba.BookId = b.BookId AND ba.AuthorType = 1
+                                               AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@WriterIds, ','))))
+
+                                       AND (@EditorIds IS NULL OR @EditorIds = '' OR EXISTS (
+                                             SELECT 1 FROM BookAuthors ba
+                                             WHERE ba.BookId = b.BookId AND ba.AuthorType = 2
+                                               AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@EditorIds, ','))))
+
+                                       AND (@TranslatorIds IS NULL OR @TranslatorIds = '' OR EXISTS (
+                                             SELECT 1 FROM BookAuthors ba
+                                             WHERE ba.BookId = b.BookId AND ba.AuthorType = 3
+                                               AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@TranslatorIds, ','))))
                                  )
                                  SELECT
                                      b.BookId,
@@ -55,11 +79,9 @@ namespace BookStore.Infrastructure.Repositories
 
                                  OUTER APPLY
                                  (
-                                     SELECT TOP (1)
-                                         bi.ImageName
+                                     SELECT TOP (1) bi.ImageName
                                      FROM BookImages AS bi
-                                     WHERE bi.BookId = b.BookId
-                                       AND bi.IsMain = 1
+                                     WHERE bi.BookId = b.BookId AND bi.IsMain = 1
                                  ) AS bi
 
                                  OUTER APPLY
@@ -67,11 +89,9 @@ namespace BookStore.Infrastructure.Repositories
                                      SELECT STRING_AGG(x.FullName, ', ') AS AuthorNames
                                      FROM
                                      (
-                                         SELECT DISTINCT
-                                             a.FullName
+                                         SELECT DISTINCT a.FullName
                                          FROM BookAuthors AS ba
-                                         INNER JOIN Authors AS a
-                                             ON a.AuthorId = ba.AuthorId
+                                         INNER JOIN Authors AS a ON a.AuthorId = ba.AuthorId
                                          WHERE ba.BookId = b.BookId
                                      ) AS x
                                  ) AS authors
@@ -84,7 +104,9 @@ namespace BookStore.Infrastructure.Repositories
                                  ) AS reviews
 
                                  ORDER BY
-                                     b.CreateDate DESC,
+                                     CASE WHEN @SortBy = 1 THEN b.Price END ASC,
+                                     CASE WHEN @SortBy = 2 THEN b.Price END DESC,
+                                     CASE WHEN @SortBy = 3 THEN b.CreateDate END DESC,
                                      b.BookId
                                  OFFSET @Offset ROWS
                                  FETCH NEXT @Step ROWS ONLY;
@@ -98,79 +120,112 @@ namespace BookStore.Infrastructure.Repositories
                     ImagePath = FileStorageConstants.Paths.BookImage,
                     PublisherId = publisherId,
                     Page = page,
-                    Step = step
+                    Step = step,
+                    SortBy = sortBy,
+                    PublisherIds = ToCsv(model.PublisherIds),
+                    CategoryIds = ToCsv(model.CategoryIds),
+                    WriterIds = ToCsv(model.WriterIds),
+                    EditorIds = ToCsv(model.EditorIds),
+                    TranslatorIds = ToCsv(model.TranslatorIds),
+                    Name = string.IsNullOrWhiteSpace(model.Name) ? null : model.Name,
+                    ISBN = string.IsNullOrWhiteSpace(model.ISBN) ? null : model.ISBN,
+                    FromPrice = model.FromPrice,
+                    ToPrice = model.ToPrice,
+                    IsExist = model.IsExist
                 });
 
             return result.ToList();
         }
 
-        public async Task<List<BookSummaryResponse>> GetPopularBooksAsync(int? publisherId = null, int page = 1, int step = 15)
+        public async Task<List<BookSummaryResponse>> GetPopularBooksAsync(FilterSearchBookRequest model,
+    int? publisherId = null, int page = 1, int step = 15)
         {
-            string query = """
-                            DECLARE @Offset INT = (@Page - 1) * @Step;
+            const string query = """
+                         DECLARE @Offset INT = (@Page - 1) * @Step;
 
-                           WITH BookReviews AS
-                           (
-                               SELECT
-                                   r.BookId,
-                                   AVG(CAST(r.Rate AS DECIMAL(10, 2))) AS AverageRate
-                               FROM Reviews AS r
-                               GROUP BY r.BookId
-                           ),
-                           FilteredBooks AS
-                           (
-                               SELECT
-                                   b.BookId,
-                                   b.Name,
-                                   b.Price,
-                                   b.StockQuantity,
-                                   b.PublisherId,
-                                   b.PublicationYear
-                               FROM Books AS b
-                               WHERE (@PublisherId IS NULL OR b.PublisherId = @PublisherId)
-                           )
-                           SELECT
-                               b.BookId,
-                               b.Name,
-                               b.Price,
-                               b.StockQuantity,
-                               CONCAT(@ImagePath, bi.ImageName) AS BookImage,
-                               authors.AuthorNames,
-                               reviews.AverageRate AS Rate
-                           FROM FilteredBooks AS b
+                         WITH BookReviews AS
+                         (
+                             SELECT
+                                 r.BookId,
+                                 AVG(CAST(r.Rate AS DECIMAL(10, 2))) AS AverageRate
+                             FROM Reviews AS r
+                             GROUP BY r.BookId
+                         ),
+                         FilteredBooks AS
+                         (
+                             SELECT
+                                 b.BookId, b.Name, b.Price, b.StockQuantity,
+                                 b.PublisherId, b.PublicationYear
+                             FROM Books AS b
+                             WHERE 1 = 1
+                               AND (@Name IS NULL OR @Name = '' OR b.Name LIKE N'%' + @Name + N'%')
+                               AND (@ISBN IS NULL OR @ISBN = '' OR b.ISBN LIKE N'%' + @ISBN + N'%')
+                               AND (@FromPrice IS NULL OR b.Price >= @FromPrice)
+                               AND (@ToPrice   IS NULL OR b.Price <= @ToPrice)
+                               AND (@IsExist = 0 OR b.StockQuantity > 0)
 
-                           OUTER APPLY
-                           (
-                               SELECT TOP (1)
-                                   bi.ImageName
-                               FROM BookImages AS bi
-                               WHERE bi.BookId = b.BookId
-                                 AND bi.IsMain = 1
-                           ) AS bi
+                               AND (@PublisherIds IS NULL OR @PublisherIds = '' OR b.PublisherId IN (
+                                     SELECT CAST(value AS INT) FROM STRING_SPLIT(@PublisherIds, ',')))
 
-                           OUTER APPLY
-                           (
-                               SELECT STRING_AGG(x.FullName, ', ') AS AuthorNames
-                               FROM
-                               (
-                                   SELECT DISTINCT
-                                       a.FullName
-                                   FROM BookAuthors AS ba
-                                   INNER JOIN Authors AS a
-                                       ON a.AuthorId = ba.AuthorId
-                                   WHERE ba.BookId = b.BookId
-                               ) AS x
-                           ) AS authors
+                               AND (@CategoryIds IS NULL OR @CategoryIds = '' OR EXISTS (
+                                     SELECT 1 FROM BookCategories bc
+                                     WHERE bc.BookId = b.BookId
+                                       AND bc.CategoryId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@CategoryIds, ','))))
 
-                           INNER JOIN BookReviews AS reviews
-                               ON reviews.BookId = b.BookId
+                               AND (@WriterIds IS NULL OR @WriterIds = '' OR EXISTS (
+                                     SELECT 1 FROM BookAuthors ba
+                                     WHERE ba.BookId = b.BookId AND ba.AuthorType = 1
+                                       AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@WriterIds, ','))))
 
-                           ORDER BY
-                               reviews.AverageRate DESC,
-                               b.BookId
-                           OFFSET @Offset ROWS
-                           FETCH NEXT @Step ROWS ONLY;
-                           """;
+                               AND (@EditorIds IS NULL OR @EditorIds = '' OR EXISTS (
+                                     SELECT 1 FROM BookAuthors ba
+                                     WHERE ba.BookId = b.BookId AND ba.AuthorType = 2
+                                       AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@EditorIds, ','))))
+
+                               AND (@TranslatorIds IS NULL OR @TranslatorIds = '' OR EXISTS (
+                                     SELECT 1 FROM BookAuthors ba
+                                     WHERE ba.BookId = b.BookId AND ba.AuthorType = 3
+                                       AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@TranslatorIds, ','))))
+                         )
+                         SELECT
+                             b.BookId,
+                             b.Name,
+                             b.Price,
+                             b.StockQuantity,
+                             b.PublicationYear,
+                             CONCAT(@ImagePath, bi.ImageName) AS BookImage,
+                             authors.AuthorNames,
+                             reviews.AverageRate AS Rate
+                         FROM FilteredBooks AS b
+
+                         OUTER APPLY
+                         (
+                             SELECT TOP (1) bi.ImageName
+                             FROM BookImages AS bi
+                             WHERE bi.BookId = b.BookId AND bi.IsMain = 1
+                         ) AS bi
+
+                         OUTER APPLY
+                         (
+                             SELECT STRING_AGG(x.FullName, ', ') AS AuthorNames
+                             FROM
+                             (
+                                 SELECT DISTINCT a.FullName
+                                 FROM BookAuthors AS ba
+                                 INNER JOIN Authors AS a ON a.AuthorId = ba.AuthorId
+                                 WHERE ba.BookId = b.BookId
+                             ) AS x
+                         ) AS authors
+
+                         INNER JOIN BookReviews AS reviews
+                             ON reviews.BookId = b.BookId
+
+                         ORDER BY
+                             reviews.AverageRate DESC,
+                             b.BookId
+                         OFFSET @Offset ROWS
+                         FETCH NEXT @Step ROWS ONLY;
+                         """;
 
             using var connection = _dapperContext.CreateConnection();
 
@@ -180,81 +235,114 @@ namespace BookStore.Infrastructure.Repositories
                     ImagePath = FileStorageConstants.Paths.BookImage,
                     PublisherId = publisherId,
                     Page = page,
-                    Step = step
+                    Step = step,
+                    PublisherIds = ToCsv(model.PublisherIds),
+                    CategoryIds = ToCsv(model.CategoryIds),
+                    WriterIds = ToCsv(model.WriterIds),
+                    EditorIds = ToCsv(model.EditorIds),
+                    TranslatorIds = ToCsv(model.TranslatorIds),
+                    Name = string.IsNullOrWhiteSpace(model.Name) ? null : model.Name,
+                    ISBN = string.IsNullOrWhiteSpace(model.ISBN) ? null : model.ISBN,
+                    FromPrice = model.FromPrice,
+                    ToPrice = model.ToPrice,
+                    IsExist = model.IsExist
                 });
+
             return result.ToList();
         }
 
-        public async Task<List<BookSummaryResponse>> GetBestSellerBooksAsync(int? publisherId = null, int page = 1, int step = 15)
+        public async Task<List<BookSummaryResponse>> GetBestSellerBooksAsync(FilterSearchBookRequest model,
+            int? publisherId = null, int page = 1, int step = 15)
         {
-            string query = """
-                           DECLARE @Offset INT = (@Page - 1) * @Step;
+            const string query = """
+                         DECLARE @Offset INT = (@Page - 1) * @Step;
 
-                           WITH BookSales AS
-                           (
-                               SELECT
-                                   oi.BookId,
-                                   SUM(oi.Count) AS TotalSold
-                               FROM OrderItems AS oi
-                               INNER JOIN Orders AS o
-                                   ON o.OrderId = oi.OrderId
-                               WHERE o.OrderStatus = 2
-                               GROUP BY oi.BookId
-                           ),
-                           FilteredBooks AS
-                           (
-                               SELECT
-                                   b.BookId,
-                                   b.Name,
-                                   b.Price,
-                                   b.StockQuantity,
-                                   b.PublisherId,
-                                   b.PublicationYear
-                               FROM Books AS b
-                               WHERE (@PublisherId IS NULL OR b.PublisherId = @PublisherId)
-                           )
-                           SELECT
-                               b.BookId,
-                               b.Name,
-                               b.Price,
-                               b.StockQuantity,
-                               CONCAT(@ImagePath, bi.ImageName) AS BookImage,
-                               authors.AuthorNames,
-                               sales.TotalSold AS Rate
-                           FROM FilteredBooks AS b
+                         WITH BookSales AS
+                         (
+                             SELECT
+                                 oi.BookId,
+                                 SUM(oi.Count) AS TotalSold
+                             FROM OrderItems AS oi
+                             INNER JOIN Orders AS o
+                                 ON o.OrderId = oi.OrderId
+                             WHERE o.OrderStatus = 2
+                             GROUP BY oi.BookId
+                         ),
+                         FilteredBooks AS
+                         (
+                             SELECT
+                                 b.BookId, b.Name, b.Price, b.StockQuantity,
+                                 b.PublisherId, b.PublicationYear
+                             FROM Books AS b
+                             WHERE 1 = 1
+                               AND (@Name IS NULL OR @Name = '' OR b.Name LIKE N'%' + @Name + N'%')
+                               AND (@ISBN IS NULL OR @ISBN = '' OR b.ISBN LIKE N'%' + @ISBN + N'%')
+                               AND (@FromPrice IS NULL OR b.Price >= @FromPrice)
+                               AND (@ToPrice   IS NULL OR b.Price <= @ToPrice)
+                               AND (@IsExist = 0 OR b.StockQuantity > 0)
 
-                           OUTER APPLY
-                           (
-                               SELECT TOP (1)
-                                   bi.ImageName
-                               FROM BookImages AS bi
-                               WHERE bi.BookId = b.BookId
-                                 AND bi.IsMain = 1
-                           ) AS bi
+                               AND (@PublisherIds IS NULL OR @PublisherIds = '' OR b.PublisherId IN (
+                                     SELECT CAST(value AS INT) FROM STRING_SPLIT(@PublisherIds, ',')))
 
-                           OUTER APPLY
-                           (
-                               SELECT STRING_AGG(x.FullName, ', ') AS AuthorNames
-                               FROM
-                               (
-                                   SELECT DISTINCT
-                                       a.FullName
-                                   FROM BookAuthors AS ba
-                                   INNER JOIN Authors AS a
-                                       ON a.AuthorId = ba.AuthorId
-                                   WHERE ba.BookId = b.BookId
-                               ) AS x
-                           ) AS authors
+                               AND (@CategoryIds IS NULL OR @CategoryIds = '' OR EXISTS (
+                                     SELECT 1 FROM BookCategories bc
+                                     WHERE bc.BookId = b.BookId
+                                       AND bc.CategoryId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@CategoryIds, ','))))
 
-                           INNER JOIN BookSales AS sales
-                               ON sales.BookId = b.BookId
+                               AND (@WriterIds IS NULL OR @WriterIds = '' OR EXISTS (
+                                     SELECT 1 FROM BookAuthors ba
+                                     WHERE ba.BookId = b.BookId AND ba.AuthorType = 1
+                                       AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@WriterIds, ','))))
 
-                           ORDER BY
-                               sales.TotalSold DESC,
-                               b.BookId
-                           OFFSET @Offset ROWS
-                           FETCH NEXT @Step ROWS ONLY;
-                           """;
+                               AND (@EditorIds IS NULL OR @EditorIds = '' OR EXISTS (
+                                     SELECT 1 FROM BookAuthors ba
+                                     WHERE ba.BookId = b.BookId AND ba.AuthorType = 2
+                                       AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@EditorIds, ','))))
+
+                               AND (@TranslatorIds IS NULL OR @TranslatorIds = '' OR EXISTS (
+                                     SELECT 1 FROM BookAuthors ba
+                                     WHERE ba.BookId = b.BookId AND ba.AuthorType = 3
+                                       AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@TranslatorIds, ','))))
+                         )
+                         SELECT
+                             b.BookId,
+                             b.Name,
+                             b.Price,
+                             b.StockQuantity,
+                             b.PublicationYear,
+                             CONCAT(@ImagePath, bi.ImageName) AS BookImage,
+                             authors.AuthorNames,
+                             sales.TotalSold AS Rate
+                         FROM FilteredBooks AS b
+
+                         OUTER APPLY
+                         (
+                             SELECT TOP (1) bi.ImageName
+                             FROM BookImages AS bi
+                             WHERE bi.BookId = b.BookId AND bi.IsMain = 1
+                         ) AS bi
+
+                         OUTER APPLY
+                         (
+                             SELECT STRING_AGG(x.FullName, ', ') AS AuthorNames
+                             FROM
+                             (
+                                 SELECT DISTINCT a.FullName
+                                 FROM BookAuthors AS ba
+                                 INNER JOIN Authors AS a ON a.AuthorId = ba.AuthorId
+                                 WHERE ba.BookId = b.BookId
+                             ) AS x
+                         ) AS authors
+
+                         INNER JOIN BookSales AS sales
+                             ON sales.BookId = b.BookId
+
+                         ORDER BY
+                             sales.TotalSold DESC,
+                             b.BookId
+                         OFFSET @Offset ROWS
+                         FETCH NEXT @Step ROWS ONLY;
+                         """;
 
             using var connection = _dapperContext.CreateConnection();
 
@@ -264,12 +352,23 @@ namespace BookStore.Infrastructure.Repositories
                     ImagePath = FileStorageConstants.Paths.BookImage,
                     PublisherId = publisherId,
                     Page = page,
-                    Step = step
+                    Step = step,
+                    PublisherIds = ToCsv(model.PublisherIds),
+                    CategoryIds = ToCsv(model.CategoryIds),
+                    WriterIds = ToCsv(model.WriterIds),
+                    EditorIds = ToCsv(model.EditorIds),
+                    TranslatorIds = ToCsv(model.TranslatorIds),
+                    Name = string.IsNullOrWhiteSpace(model.Name) ? null : model.Name,
+                    ISBN = string.IsNullOrWhiteSpace(model.ISBN) ? null : model.ISBN,
+                    FromPrice = model.FromPrice,
+                    ToPrice = model.ToPrice,
+                    IsExist = model.IsExist
                 });
+
             return result.ToList();
         }
 
-        #endregion HomePage
+        #endregion Search and filter books
 
         public async Task<BookDetailResponse?> GetBookDetailAsync(int bookId)
         {
@@ -369,6 +468,9 @@ namespace BookStore.Infrastructure.Repositories
                 .ExecuteUpdateAsync(setters => setters
                     .SetProperty(b => b.IsDelete, true));
         }
+
+        private string? ToCsv(List<int>? list) =>
+            (list == null || list.Count == 0) ? null : string.Join(",", list);
 
         private List<BookAuthor> CreateBookAuthorList(List<int> ids, AuthorType type)
         {

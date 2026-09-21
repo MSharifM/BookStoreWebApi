@@ -7,7 +7,7 @@ namespace BookStore.Application.Interfaces.Services
     {
         Task<List<PublisherSummaryResponse>> GetBestSellersPublisher();
 
-        Task<List<BookSummaryResponse>> GetPublisherBooksAsync(string userId, string? bookName = null, string? ISBN = null, int page = 1);
+        Task<List<BookSummaryResponse>> GetPublisherBooksAsync(string userId, FilterSearchBookRequest model, int page = 1);
 
         Task<DashboardReportResponse> GetDashboardReportAsync(string userId);
 

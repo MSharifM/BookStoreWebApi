@@ -9,13 +9,13 @@ namespace BookStore.Api.Controllers
     [ApiController]
     public class HomeController : ControllerBase
     {
-        private readonly IBookRepository _bookRepository;
+        private readonly IBookService _bookService;
         private readonly IBannerRepository _bannerRepository;
         private readonly IPublisherService _publisherService;
 
-        public HomeController(IBookRepository bookRepository, IBannerRepository bannerRepository, IPublisherService publisherService)
+        public HomeController(IBookService bookService, IBannerRepository bannerRepository, IPublisherService publisherService)
         {
-            _bookRepository = bookRepository;
+            _bookService = bookService;
             _bannerRepository = bannerRepository;
             _publisherService = publisherService;
         }
@@ -23,7 +23,8 @@ namespace BookStore.Api.Controllers
         [HttpGet("newest")]
         public async Task<IActionResult> GetNewestBooks()
         {
-            var result = await _bookRepository.GetNewestBooksAsync();
+            var result = await _bookService.SearchAndFilterAllBooksAsync(
+                new FilterSearchBookRequest() { SortBy = BookSortBy.Newest });
 
             return Ok(result);
         }
@@ -31,7 +32,8 @@ namespace BookStore.Api.Controllers
         [HttpGet("bestsellers")]
         public async Task<IActionResult> GetBestSellerBooks()
         {
-            var result = await _bookRepository.GetBestSellerBooksAsync();
+            var result = await _bookService.SearchAndFilterAllBooksAsync(
+                new FilterSearchBookRequest() { SortBy = BookSortBy.BestSelling });
 
             return Ok(result);
         }
@@ -39,7 +41,8 @@ namespace BookStore.Api.Controllers
         [HttpGet("popular")]
         public async Task<IActionResult> GetPopularBooks()
         {
-            var result = await _bookRepository.GetPopularBooksAsync();
+            var result = await _bookService.SearchAndFilterAllBooksAsync(
+                new FilterSearchBookRequest() { SortBy = BookSortBy.Popular });
 
             return Ok(result);
         }

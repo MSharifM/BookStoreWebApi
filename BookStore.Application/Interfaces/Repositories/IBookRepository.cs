@@ -4,17 +4,15 @@ namespace BookStore.Application.Interfaces.Repositories
 {
     public interface IBookRepository
     {
-        Task<List<BookSummaryResponse>> GetNewestBooksAsync(int? publisherId = null, int page = 1, int step = 15);
+        Task<List<BookSummaryResponse>> GetNewestBooksAsync(int sortBy, FilterSearchBookRequest model, int? publisherId = null, int page = 1, int step = 15);
 
-        Task<List<BookSummaryResponse>> GetPopularBooksAsync(int? publisherId = null, int page = 1, int step = 15);
+        Task<List<BookSummaryResponse>> GetPopularBooksAsync(FilterSearchBookRequest model, int? publisherId = null, int page = 1, int step = 15);
 
-        Task<List<BookSummaryResponse>> GetBestSellerBooksAsync(int? publisherId = null, int page = 1, int step = 15);
+        Task<List<BookSummaryResponse>> GetBestSellerBooksAsync(FilterSearchBookRequest model, int? publisherId = null, int page = 1, int step = 15);
 
         //TODO: best discount
 
         Task<BookDetailResponse?> GetBookDetailAsync(int bookId);
-
-        //TODO: get all books by filters
 
         Task<bool> IsExitsISBNAsync(string ISBN);
 

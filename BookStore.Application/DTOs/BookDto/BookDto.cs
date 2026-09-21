@@ -66,4 +66,29 @@ namespace BookStore.Application.DTOs.BookDto
         public bool IsMain { get; set; } = false;
         public int DisplayOrder { get; set; }
     }
+
+    public class FilterSearchBookRequest
+    {
+        public string? Name { get; set; }
+        public string? ISBN { get; set; }
+        public decimal? FromPrice { get; set; }
+        public decimal? ToPrice { get; set; }
+
+        public bool IsExist { get; set; } = true;
+        public List<int> PublisherIds { get; set; } = new();
+        public List<int> CategoryIds { get; set; } = new();
+        public List<int> WriterIds { get; set; } = new();
+        public List<int> EditorIds { get; set; } = new();
+        public List<int> TranslatorIds { get; set; } = new();
+        public BookSortBy SortBy { get; set; } = BookSortBy.Newest;
+    }
+
+    public enum BookSortBy
+    {
+        Newest = 1,
+        Cheapest = 2,
+        MostExpensive = 3,
+        Popular = 4,
+        BestSelling = 5
+    }
 }

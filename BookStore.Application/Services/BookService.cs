@@ -21,30 +21,35 @@ namespace BookStore.Application.Services
             _unitOfWorkService = unitOfWorkService;
         }
 
-        public async Task<List<BookSummaryResponse>> GetNewestBooksAsync(int? publisherId = null, int page = 1, int step = 15)
-        {
-            var result = await _bookRepository.GetNewestBooksAsync(publisherId, page, step);
-
-            return result;
-        }
-
-        public async Task<List<BookSummaryResponse>> GetPopularBooksAsync(int? publisherId = null, int page = 1, int step = 15)
-        {
-            var result = await _bookRepository.GetPopularBooksAsync(publisherId, page, step);
-
-            return result;
-        }
-
-        public async Task<List<BookSummaryResponse>> GetBestSellerBooksAsync(int? publisherId = null, int page = 1, int step = 15)
-        {
-            var result = await _bookRepository.GetBestSellerBooksAsync(publisherId, page, step);
-
-            return result;
-        }
-
         public async Task<BookDetailResponse?> GetBookDetailAsync(int bookId)
         {
             var result = await _bookRepository.GetBookDetailAsync(bookId);
+
+            return result;
+        }
+
+        public async Task<List<BookSummaryResponse>> SearchAndFilterAllBooksAsync(FilterSearchBookRequest? model, int page = 1)
+        {
+            model ??= new FilterSearchBookRequest();
+
+            var result = new List<BookSummaryResponse>();
+
+            switch (model.SortBy)
+            {
+                case BookSortBy.Newest or BookSortBy.Cheapest or BookSortBy.MostExpensive:
+                    result = await _bookRepository.GetNewestBooksAsync((int)model.SortBy, model, page);
+                    break;
+
+                case BookSortBy.BestSelling:
+                    result = await _bookRepository.GetBestSellerBooksAsync(model, page);
+                    break;
+
+                case BookSortBy.Popular:
+                    result = await _bookRepository.GetPopularBooksAsync(model, page);
+                    break;
+
+                    //TODO: Best discount
+            }
 
             return result;
         }

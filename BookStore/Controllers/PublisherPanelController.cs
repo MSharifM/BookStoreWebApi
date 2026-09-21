@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using BookStore.Application.DTOs.BookDto;
 using BookStore.Application.Interfaces.Services;
 
 namespace BookStore.Api.Controllers
@@ -37,11 +38,11 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
-        // GET: /api/publisherPanel/myBooks
-        [HttpGet("myBooks")]
-        public async Task<IActionResult> GetPublisherBooks(string? bookName = null, string? isbn = null, int page = 1)
+        // GET /api/publisherPanel/books
+        [HttpGet("books")]
+        public async Task<IActionResult> GetPublisherBooks([FromQuery] FilterSearchBookRequest model, int page = 1)
         {
-            var result = await _publisherService.GetPublisherBooksAsync(UserId, bookName, isbn, page);
+            var result = await _publisherService.GetPublisherBooksAsync(UserId, model, page);
 
             return Ok(result);
         }
