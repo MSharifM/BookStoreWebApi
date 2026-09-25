@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-ink-950 font-sans text-ink-100 antialiased;
+    font-feature-settings: 'ss01';
+  }
+
+  .fa-num {
+    font-feature-settings: 'ss02';
+  }
+
+  :focus-visible {
+    outline: none;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    opacity: 0.9;
+  }
+
+  /* اسکرول‌بار دارک */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #13100b;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2d281e;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #413a2c;
+  }
+}
+
+@layer components {
+  .surface-card {
+    @apply rounded-3xl border border-ink-700/80 bg-ink-800/60 shadow-card-glow backdrop-blur-sm;
+  }
+
+  .dot-pattern {
+    background-image: radial-gradient(
+      circle,
+      rgba(209, 164, 71, 0.05) 1px,
+      transparent 1px
+    );
+    background-size: 24px 24px;
+  }
+}

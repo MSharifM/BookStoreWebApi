@@ -260,3 +260,12 @@ paket-files/
 appsettings.Development.
 BookStore/wwwroot/
 *.sln.DotSettings
+
+node_modules
+dist
+dist-ssr
+*.local
+.env
+.env.local
+.env.*.local
+.DS_Store
