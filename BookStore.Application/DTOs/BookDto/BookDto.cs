@@ -83,6 +83,15 @@ namespace BookStore.Application.DTOs.BookDto
         public BookSortBy SortBy { get; set; } = BookSortBy.Newest;
     }
 
+    public class SummarySearchByBookNameResponse
+    {
+        public int BookId { get; set; }
+        public string BookName { get; set; } = null!;
+        public decimal Price { get; set; }
+        public string ImagePath { get; set; } = null!;
+        public string PublisherName { get; set; } = null!;
+    }
+
     public enum BookSortBy
     {
         Newest = 1,

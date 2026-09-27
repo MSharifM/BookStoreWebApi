@@ -11,5 +11,7 @@ namespace BookStore.Application.Interfaces.Services
         Task AddBookAsync(string userId, AddBookRequest model);
 
         Task DeleteBookAsync(string userId, int bookId);
+
+        Task<List<SummarySearchByBookNameResponse>> SummarySearchByBookNameAsync(string bookName);
     }
 }

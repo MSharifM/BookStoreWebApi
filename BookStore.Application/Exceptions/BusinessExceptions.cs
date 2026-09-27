@@ -27,7 +27,10 @@
         : AppException("برای نظر دادن باید کتاب را خریداری کرده باشید.", ErrorCode.Forbidden);
 
     public class DuplicateISBNException()
-        : AppException("برای نظر دادن باید کتاب را خریداری کرده باشید.", ErrorCode.Conflict);
+        : AppException("شابک کد تکراری است", ErrorCode.Conflict);
+
+    public class DuplicateCategoryNameException()
+        : AppException("نام دسته بندی تکراری است", ErrorCode.Conflict);
 
     public enum ErrorCode
     {

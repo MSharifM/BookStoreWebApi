@@ -469,6 +469,24 @@ namespace BookStore.Infrastructure.Repositories
                     .SetProperty(b => b.IsDelete, true));
         }
 
+        public async Task<List<SummarySearchByBookNameResponse>> SummarySearchByBookName(string bookName)
+        {
+            var result = await _context.Books
+                .Where(b => b.Name.Contains(bookName))
+                .Take(5)
+                .Select(b => new SummarySearchByBookNameResponse()
+                {
+                    BookId = b.BookId,
+                    BookName = b.Name,
+                    ImagePath = FileStorageConstants.Paths.BookImage + b.BookImages.FirstOrDefault(bi => bi.IsMain),
+                    Price = b.Price,
+                    PublisherName = b.Publisher.User.UserName!
+                })
+                .ToListAsync();
+
+            return result;
+        }
+
         private string? ToCsv(List<int>? list) =>
             (list == null || list.Count == 0) ? null : string.Join(",", list);
 

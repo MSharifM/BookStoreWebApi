@@ -20,6 +20,7 @@ namespace BookStore.Api.Controllers
             _publisherService = publisherService;
         }
 
+        // GET /api/home/newest
         [HttpGet("newest")]
         public async Task<IActionResult> GetNewestBooks()
         {
@@ -29,6 +30,7 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
+        // GET /api/home/bestsellers
         [HttpGet("bestsellers")]
         public async Task<IActionResult> GetBestSellerBooks()
         {
@@ -38,6 +40,7 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
+        // GET /api/home/popular
         [HttpGet("popular")]
         public async Task<IActionResult> GetPopularBooks()
         {
@@ -47,6 +50,7 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
+        // GET /api/home/most-discount
         [HttpGet("most-discount")]
         public async Task<IActionResult> GetMostDiscount()
         {
@@ -54,6 +58,7 @@ namespace BookStore.Api.Controllers
             return Ok(new List<BookSummaryResponse>());
         }
 
+        // GET /api/home/bestsellers-publisher
         [HttpGet("bestsellers-publisher")]
         public async Task<IActionResult> GetBestSellerPublisher()
         {
@@ -62,10 +67,20 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
+        // GET /api/home/banner
         [HttpGet("banner")]
         public async Task<IActionResult> GetBanner()
         {
             var result = await _bannerRepository.GetHomePageBannerAsync();
+
+            return Ok(result);
+        }
+
+        // GET /api/home/search?name={name}
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(string name)
+        {
+            var result = await _bookService.SummarySearchByBookNameAsync(name);
 
             return Ok(result);
         }

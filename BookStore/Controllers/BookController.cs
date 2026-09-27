@@ -73,7 +73,7 @@ namespace BookStore.Api.Controllers
         // DELETE /api/book/{bookId}
         [HttpDelete("{bookId:int}")]
         [Authorize(Roles = "Publisher")]
-        public async Task<IActionResult> AddBook(int bookId)
+        public async Task<IActionResult> DeleteBook(int bookId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 

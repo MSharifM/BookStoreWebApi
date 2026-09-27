@@ -19,5 +19,7 @@ namespace BookStore.Application.Interfaces.Repositories
         Task<int> CreateBookAsync(int publisherId, AddBookRequest model);
 
         Task DeleteBookAsync(int publisherId, int bookId);
+
+        Task<List<SummarySearchByBookNameResponse>> SummarySearchByBookName(string bookName);
     }
 }

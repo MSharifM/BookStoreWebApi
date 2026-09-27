@@ -103,5 +103,12 @@ namespace BookStore.Application.Services
 
             await _bookRepository.DeleteBookAsync(publisherId, bookId);
         }
+
+        public async Task<List<SummarySearchByBookNameResponse>> SummarySearchByBookNameAsync(string bookName)
+        {
+            var result = await _bookRepository.SummarySearchByBookName(bookName);
+
+            return result;
+        }
     }
 }

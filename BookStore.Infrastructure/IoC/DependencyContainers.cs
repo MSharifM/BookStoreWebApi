@@ -22,6 +22,7 @@ namespace BookStore.Infrastructure.IoC
             service.AddScoped<IDapperContext, DapperContext>();
             service.AddScoped<IPublisherService, PublisherService>();
             service.AddScoped<IBookService, BookService>();
+            service.AddScoped<ICategoryService, CategoryService>();
 
             #endregion Services
 
@@ -37,6 +38,7 @@ namespace BookStore.Infrastructure.IoC
             service.AddScoped<IAddressRepository, AddressRepository>();
             service.AddScoped<IOrderRepository, OrderRepository>();
             service.AddScoped<IReviewRepository, ReviewRepository>();
+            service.AddScoped<ICategoryRepository, CategoryRepository>();
 
             #endregion Repositories
         }
