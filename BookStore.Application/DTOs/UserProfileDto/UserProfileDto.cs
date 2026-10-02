@@ -31,4 +31,10 @@ namespace BookStore.Application.DTOs.UserProfileDto
         public string? Phone { get; set; }
         public FileDataDto? ImageData { get; set; }
     }
+
+    public class UserSummaryInfoResponse
+    {
+        public string UserName { get; set; } = null!;
+        public string ImagePath { get; set; } = null!;
+    }
 }

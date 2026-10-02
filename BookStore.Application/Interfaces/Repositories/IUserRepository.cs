@@ -7,5 +7,7 @@ namespace BookStore.Application.Interfaces.Repositories
         Task<UserPanelDetailResponse?> GetUserPanelDetailAsync(string userId);
 
         Task<ProfileInformationResponse?> GetUserInformationAsync(string userId);
+
+        Task<UserSummaryInfoResponse?> GetUserSummaryInfoAsync(string userId);
     }
 }

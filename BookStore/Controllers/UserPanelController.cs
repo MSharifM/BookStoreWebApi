@@ -49,6 +49,18 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
+        // GET /api/userPanel/summary-info
+        [HttpGet("summary-info")]
+        public async Task<IActionResult> GetUserSummaryInfo()
+        {
+            var result = await _userRepository.GetUserSummaryInfoAsync(UserId);
+
+            if (result is null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
         // PUT /api/userPanel/
         [HttpPut]
         public async Task<IActionResult> EditUserProfile([FromForm] EditProfileRequest model, IFormFile? file)

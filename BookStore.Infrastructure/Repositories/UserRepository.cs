@@ -1,4 +1,5 @@
-﻿using BookStore.Application.DTOs.OrderDto;
+﻿using BookStore.Application.Constants;
+using BookStore.Application.DTOs.OrderDto;
 using BookStore.Application.DTOs.UserProfileDto;
 using BookStore.Application.Interfaces.Repositories;
 using BookStore.Infrastructure.Data;
@@ -56,6 +57,20 @@ namespace BookStore.Infrastructure.Repositories
                     Phone = u.PhoneNumber,
                     ImageProfile = u.ImageProfile,
                     UserName = u.UserName!
+                })
+                .FirstOrDefaultAsync();
+
+            return result;
+        }
+
+        public async Task<UserSummaryInfoResponse?> GetUserSummaryInfoAsync(string userId)
+        {
+            var result = await _context.Users
+                .Where(u => u.Id == userId)
+                .Select(u => new UserSummaryInfoResponse()
+                {
+                    UserName = u.UserName!,
+                    ImagePath = FileStorageConstants.Paths.UserProfile + u.ImageProfile
                 })
                 .FirstOrDefaultAsync();
 
