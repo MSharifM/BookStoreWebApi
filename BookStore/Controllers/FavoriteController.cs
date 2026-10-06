@@ -62,5 +62,14 @@ namespace BookStore.Api.Controllers
 
             return Ok();
         }
+
+        // GET /api/favorite/{bookId}
+        [HttpGet("{bookId:int}")]
+        public async Task<IActionResult> IsBookInFavorites(int bookId)
+        {
+            var result = await _favoriteRepository.IsBookInFavoritesAsync(bookId, UserId!);
+
+            return Ok(result);
+        }
     }
 }

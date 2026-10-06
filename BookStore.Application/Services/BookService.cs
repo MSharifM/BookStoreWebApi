@@ -37,7 +37,7 @@ namespace BookStore.Application.Services
             switch (model.SortBy)
             {
                 case BookSortBy.Newest or BookSortBy.Cheapest or BookSortBy.MostExpensive:
-                    result = await _bookRepository.GetNewestBooksAsync((int)model.SortBy, model, page);
+                    result = await _bookRepository.GetBooksSortByPriceOrDateAsync((int)model.SortBy, model, page);
                     break;
 
                 case BookSortBy.BestSelling:
@@ -107,6 +107,17 @@ namespace BookStore.Application.Services
         public async Task<List<SummarySearchByBookNameResponse>> SummarySearchByBookNameAsync(string bookName)
         {
             var result = await _bookRepository.SummarySearchByBookName(bookName);
+
+            return result;
+        }
+
+        public async Task<List<BookSummaryResponse>> GetSimilarBooksAsync(int bookId)
+        {
+            var categories = await _bookRepository.GetBookCategoriesAsync(bookId);
+
+            // TODO: Complete logic method
+            var result = await _bookRepository.GetBooksSortByPriceOrDateAsync(1,
+                    new FilterSearchBookRequest() { CategoryIds = categories });
 
             return result;
         }

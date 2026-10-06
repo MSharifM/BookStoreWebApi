@@ -4,7 +4,7 @@ namespace BookStore.Application.Interfaces.Repositories
 {
     public interface IBookRepository
     {
-        Task<List<BookSummaryResponse>> GetNewestBooksAsync(int sortBy, FilterSearchBookRequest model, int? publisherId = null, int page = 1, int step = 15);
+        Task<List<BookSummaryResponse>> GetBooksSortByPriceOrDateAsync(int sortBy, FilterSearchBookRequest model, int? publisherId = null, int page = 1, int step = 15);
 
         Task<List<BookSummaryResponse>> GetPopularBooksAsync(FilterSearchBookRequest model, int? publisherId = null, int page = 1, int step = 15);
 
@@ -21,5 +21,7 @@ namespace BookStore.Application.Interfaces.Repositories
         Task DeleteBookAsync(int publisherId, int bookId);
 
         Task<List<SummarySearchByBookNameResponse>> SummarySearchByBookName(string bookName);
+
+        Task<List<int>> GetBookCategoriesAsync(int bookId);
     }
 }

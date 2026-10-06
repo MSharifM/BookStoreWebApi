@@ -85,5 +85,13 @@ namespace BookStore.Infrastructure.Repositories
                 .Where(f => f.UserId == userId)
                 .ExecuteDeleteAsync();
         }
+
+        public async Task<bool> IsBookInFavoritesAsync(int bookId, string userId)
+        {
+            var result = await _context.Favorites
+                .AnyAsync(f => f.UserId == userId && f.BookId == bookId);
+
+            return result;
+        }
     }
 }

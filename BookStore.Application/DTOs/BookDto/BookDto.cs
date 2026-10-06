@@ -29,9 +29,9 @@ namespace BookStore.Application.DTOs.BookDto
         public DateTime CreateDate { get; set; }
         public double Rate { get; set; }
 
-        public List<string> WriterNames { get; set; } = new();
-        public List<string> EditorNames { get; set; } = new();
-        public List<string> TranslatorNames { get; set; } = new();
+        public List<AuthorDto> Writers { get; set; } = new();
+        public List<AuthorDto> Editors { get; set; } = new();
+        public List<AuthorDto> Translators { get; set; } = new();
 
         public int PublisherId { get; set; }
         public string PublisherName { get; set; } = null!;
@@ -40,6 +40,8 @@ namespace BookStore.Application.DTOs.BookDto
 
         public List<string> BookImages { get; set; } = new();
     }
+
+    public record AuthorDto(int Id, string Name);
 
     public class AddBookRequest
     {

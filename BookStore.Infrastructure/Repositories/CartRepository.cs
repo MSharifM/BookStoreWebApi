@@ -127,5 +127,16 @@ namespace BookStore.Infrastructure.Repositories
                 .Where(c => c.Cart.UserId == userId)
                 .ExecuteDeleteAsync();
         }
+
+        public async Task<int> GetBookCountInCartAsync(int bookId, string userId)
+        {
+            var count = await _context.CartItems
+                .AsNoTracking()
+                .Where(ci => ci.Cart.UserId == userId && ci.BookId == bookId)
+                .Select(ci => ci.Count)
+                .FirstOrDefaultAsync();
+
+            return count;
+        }
     }
 }

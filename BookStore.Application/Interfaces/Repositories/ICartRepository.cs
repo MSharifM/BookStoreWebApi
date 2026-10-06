@@ -13,5 +13,7 @@ namespace BookStore.Application.Interfaces.Repositories
         Task<bool> UpdateCartAsync(string userId, UpdateCartRequest model);
 
         Task ClearCartAsync(string userId);
+
+        Task<int> GetBookCountInCartAsync(int bookId, string userId);
     }
 }

@@ -81,5 +81,14 @@ namespace BookStore.Api.Controllers
 
             return Ok();
         }
+
+        // GET /api/book/similar/{bookId}
+        [HttpGet("similar/{bookId:int}")]
+        public async Task<IActionResult> GetSimilarBooks(int bookId)
+        {
+            var result = await _bookService.GetSimilarBooksAsync(bookId);
+
+            return Ok(result);
+        }
     }
 }

@@ -39,10 +39,12 @@ export function useApi<T>(
       return;
     }
 
-    let cancelled = false;
+    // ✅ جدید: ریست کردن داده‌ی قدیمی وقتی key عوض می‌شود
+    setData(null);
     setIsLoading(true);
     setError(null);
 
+    let cancelled = false;
     fetcher()
       .then((result) => {
         if (cancelled) return;

@@ -78,5 +78,14 @@ namespace BookStore.Api.Controllers
 
             return Ok();
         }
+
+        // GET /api/cart/{bookId}
+        [HttpGet("{bookId:int}")]
+        public async Task<IActionResult> GetBookCountInCart(int bookId)
+        {
+            var result = await _cartRepository.GetBookCountInCartAsync(bookId, UserId);
+
+            return Ok(result);
+        }
     }
 }

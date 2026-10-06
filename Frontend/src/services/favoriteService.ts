@@ -6,4 +6,17 @@ export const favoriteService = {
     const { data } = await apiClient.get<FavoriteItemsDetailResponse[]>('/favorite/');
     return data;
   },
+
+  isBookFavorite: async (bookId: number) => {
+    const { data } = await apiClient.get<boolean>(`/favorite/${bookId}`);
+    return data;
+  },
+
+  addToFavorite: async (bookId: number) => {
+    await apiClient.post('/favorite/', null, { params: { bookId } });
+  },
+
+  removeFromFavorite: async (bookId: number) => {
+    await apiClient.delete(`/favorite/${bookId}`);
+  },
 };

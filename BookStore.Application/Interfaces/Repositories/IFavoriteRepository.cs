@@ -11,5 +11,7 @@ namespace BookStore.Application.Interfaces.Repositories
         Task<bool> RemoveFromFavoriteAsync(string userId, int bookId);
 
         Task ClearFavoriteAsync(string userId);
+
+        Task<bool> IsBookInFavoritesAsync(int bookId, string userId);
     }
 }

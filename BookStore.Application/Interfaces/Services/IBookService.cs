@@ -13,5 +13,7 @@ namespace BookStore.Application.Interfaces.Services
         Task DeleteBookAsync(string userId, int bookId);
 
         Task<List<SummarySearchByBookNameResponse>> SummarySearchByBookNameAsync(string bookName);
+
+        Task<List<BookSummaryResponse>> GetSimilarBooksAsync(int bookId);
     }
 }

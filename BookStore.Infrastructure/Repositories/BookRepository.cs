@@ -24,7 +24,7 @@ namespace BookStore.Infrastructure.Repositories
 
         #region Search and filter books
 
-        public async Task<List<BookSummaryResponse>> GetNewestBooksAsync(int sortBy, FilterSearchBookRequest model,
+        public async Task<List<BookSummaryResponse>> GetBooksSortByPriceOrDateAsync(int sortBy, FilterSearchBookRequest model,
             int? publisherId = null, int page = 1, int step = 15)
         {
             const string query = """
@@ -395,14 +395,17 @@ namespace BookStore.Infrastructure.Repositories
                     BookImages = b.BookImages.OrderBy(bi => bi.DisplayOrder)
                         .Select(bi => FileStorageConstants.Paths.BookImage + bi.ImageName).ToList(),
 
-                    WriterNames = b.BookAuthors.Where(ba => ba.AuthorType == AuthorType.Writer)
-                        .Select(ba => ba.Author.FullName).ToList(),
+                    Writers = b.BookAuthors.Where(ba => ba.AuthorType == AuthorType.Writer)
+                        .Select(ba => new AuthorDto(ba.AuthorId, ba.Author.FullName))
+                        .ToList(),
 
-                    EditorNames = b.BookAuthors.Where(ba => ba.AuthorType == AuthorType.Editor)
-                        .Select(ba => ba.Author.FullName).ToList(),
+                    Editors = b.BookAuthors.Where(ba => ba.AuthorType == AuthorType.Editor)
+                        .Select(ba => new AuthorDto(ba.AuthorId, ba.Author.FullName))
+                        .ToList(),
 
-                    TranslatorNames = b.BookAuthors.Where(ba => ba.AuthorType == AuthorType.Translator)
-                        .Select(ba => ba.Author.FullName).ToList(),
+                    Translators = b.BookAuthors.Where(ba => ba.AuthorType == AuthorType.Translator)
+                        .Select(ba => new AuthorDto(ba.AuthorId, ba.Author.FullName))
+                        .ToList(),
 
                     Category = b.BookCategories.Select(bc => new CategoryDto()
                     {
@@ -464,6 +467,7 @@ namespace BookStore.Infrastructure.Repositories
         public async Task DeleteBookAsync(int publisherId, int bookId)
         {
             await _context.Books
+                .AsNoTracking()
                 .Where(b => b.BookId == bookId && b.PublisherId == publisherId)
                 .ExecuteUpdateAsync(setters => setters
                     .SetProperty(b => b.IsDelete, true));
@@ -472,6 +476,7 @@ namespace BookStore.Infrastructure.Repositories
         public async Task<List<SummarySearchByBookNameResponse>> SummarySearchByBookName(string bookName)
         {
             var result = await _context.Books
+                .AsNoTracking()
                 .Where(b => b.Name.Contains(bookName))
                 .Take(5)
                 .Select(b => new SummarySearchByBookNameResponse()
@@ -482,6 +487,17 @@ namespace BookStore.Infrastructure.Repositories
                     Price = b.Price,
                     PublisherName = b.Publisher.User.UserName!
                 })
+                .ToListAsync();
+
+            return result;
+        }
+
+        public async Task<List<int>> GetBookCategoriesAsync(int bookId)
+        {
+            var result = await _context.Books
+                .AsNoTracking()
+                .Where(b => b.BookId == bookId)
+                .SelectMany(b => b.BookCategories.Select(bc => bc.CategoryId))
                 .ToListAsync();
 
             return result;
