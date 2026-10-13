@@ -77,5 +77,12 @@ namespace BookStore.Application.Services
 
             return result;
         }
+
+        public async Task<List<PublisherSummaryResponse>> SearchPublisherByNameAsync(string? name)
+        {
+            var result = await _publisherRepository.SearchPublisherByNameAsync(name);
+
+            return result;
+        }
     }
 }

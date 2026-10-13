@@ -10,6 +10,9 @@ export function Rating({
   size?: 'sm' | 'md';
   className?: string;
 }) {
+  // rate = 0 یعنی «بدون نظر» → هیچی نشون نده
+  if (!value || value <= 0) return null;
+
   const starSize = size === 'md' ? 'h-4 w-4' : 'h-3.5 w-3.5';
   const textSize = size === 'md' ? 'text-sm' : 'text-xs';
 

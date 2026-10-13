@@ -15,3 +15,9 @@ export function formatPrice(value: number): string {
 export function formatRating(rate: number): string {
   return toPersianDigits(rate.toFixed(1));
 }
+
+export function toEnglishDigits(input: string): string {
+  return input
+    .replace(/[۰-۹]/g, (d) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
+    .replace(/[٠-٩]/g, (d) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
+}

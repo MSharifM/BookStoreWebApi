@@ -1,11 +1,6 @@
 ﻿namespace BookStore.Application.DTOs.PublisherDto
 {
-    public class PublisherSummaryResponse
-    {
-        public int PublisherId { get; set; }
-        public string PublisherName { get; set; } = null!;
-        public string PublisherImage { get; set; } = null!;
-    }
+    public record PublisherSummaryResponse(int PublisherId, string PublisherName, string PublisherImage);
 
     public record DashboardReportResponse(int CountBooks, int CountSalesBook, decimal TotalIncome);
 

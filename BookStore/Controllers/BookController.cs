@@ -18,11 +18,11 @@ namespace BookStore.Api.Controllers
             _bookService = bookService;
         }
 
-        // GET /api/book
-        [HttpGet]
-        public async Task<IActionResult> GetBooks([FromQuery] FilterSearchBookRequest? model)
+        // GET /api/book/search
+        [HttpGet("Search")]
+        public async Task<IActionResult> SearchBooks([FromQuery] FilterSearchBookRequest? model, int page = 1)
         {
-            var result = await _bookService.SearchAndFilterAllBooksAsync(model);
+            var result = await _bookService.SearchAndFilterAllBooksAsync(model, page);
 
             return Ok(result);
         }

@@ -9,18 +9,18 @@ namespace BookStore.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Publisher")]
-    public class PublisherPanelController : ControllerBase
+    public class PublisherController : ControllerBase
     {
         private readonly IPublisherService _publisherService;
 
         private string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-        public PublisherPanelController(IPublisherService publisherService)
+        public PublisherController(IPublisherService publisherService)
         {
             _publisherService = publisherService;
         }
 
-        // GET /api/publisherPanel/report
+        // GET /api/publisher/report
         [HttpGet("report")]
         public async Task<IActionResult> GetDashboardRepost()
         {
@@ -29,7 +29,7 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
-        // GET /api/publisherPanel/chart
+        // GET /api/publisher/chart
         [HttpGet("chart")]
         public async Task<IActionResult> GetChartIncome(int? year, int? month)
         {
@@ -38,11 +38,21 @@ namespace BookStore.Api.Controllers
             return Ok(result);
         }
 
-        // GET /api/publisherPanel/books
+        // GET /api/publisher/books
         [HttpGet("books")]
         public async Task<IActionResult> GetPublisherBooks([FromQuery] FilterSearchBookRequest model, int page = 1)
         {
             var result = await _publisherService.GetPublisherBooksAsync(UserId, model, page);
+
+            return Ok(result);
+        }
+
+        // GET /api/publisher/search
+        [HttpGet("search")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SearchPublishersByName(string? name)
+        {
+            var result = await _publisherService.SearchPublisherByNameAsync(name);
 
             return Ok(result);
         }

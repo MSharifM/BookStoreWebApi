@@ -12,5 +12,7 @@ namespace BookStore.Application.Interfaces.Services
         Task<DashboardReportResponse> GetDashboardReportAsync(string userId);
 
         Task<List<MonthlyChartIncomeResponse>> GetMonthlyChartAsync(string userId, int? year = null, int? month = null);
+
+        Task<List<PublisherSummaryResponse>> SearchPublisherByNameAsync(string? name);
     }
 }

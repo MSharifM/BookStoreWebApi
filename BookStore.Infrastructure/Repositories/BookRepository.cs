@@ -51,20 +51,10 @@ namespace BookStore.Infrastructure.Repositories
                                              WHERE bc.BookId = b.BookId
                                                AND bc.CategoryId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@CategoryIds, ','))))
 
-                                       AND (@WriterIds IS NULL OR @WriterIds = '' OR EXISTS (
+                                       AND (@AuthorIds IS NULL OR @AuthorIds = '' OR EXISTS (
                                              SELECT 1 FROM BookAuthors ba
-                                             WHERE ba.BookId = b.BookId AND ba.AuthorType = 1
-                                               AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@WriterIds, ','))))
-
-                                       AND (@EditorIds IS NULL OR @EditorIds = '' OR EXISTS (
-                                             SELECT 1 FROM BookAuthors ba
-                                             WHERE ba.BookId = b.BookId AND ba.AuthorType = 2
-                                               AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@EditorIds, ','))))
-
-                                       AND (@TranslatorIds IS NULL OR @TranslatorIds = '' OR EXISTS (
-                                             SELECT 1 FROM BookAuthors ba
-                                             WHERE ba.BookId = b.BookId AND ba.AuthorType = 3
-                                               AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@TranslatorIds, ','))))
+                                             WHERE ba.BookId = b.BookId
+                                               AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@AuthorIds, ','))))
                                  )
                                  SELECT
                                      b.BookId,
@@ -124,9 +114,7 @@ namespace BookStore.Infrastructure.Repositories
                     SortBy = sortBy,
                     PublisherIds = ToCsv(model.PublisherIds),
                     CategoryIds = ToCsv(model.CategoryIds),
-                    WriterIds = ToCsv(model.WriterIds),
-                    EditorIds = ToCsv(model.EditorIds),
-                    TranslatorIds = ToCsv(model.TranslatorIds),
+                    AuthorIds = ToCsv(model.AuthorIds),
                     Name = string.IsNullOrWhiteSpace(model.Name) ? null : model.Name,
                     ISBN = string.IsNullOrWhiteSpace(model.ISBN) ? null : model.ISBN,
                     FromPrice = model.FromPrice,
@@ -172,20 +160,10 @@ namespace BookStore.Infrastructure.Repositories
                                      WHERE bc.BookId = b.BookId
                                        AND bc.CategoryId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@CategoryIds, ','))))
 
-                               AND (@WriterIds IS NULL OR @WriterIds = '' OR EXISTS (
+                               AND (@AuthorIds IS NULL OR @AuthorIds = '' OR EXISTS (
                                      SELECT 1 FROM BookAuthors ba
                                      WHERE ba.BookId = b.BookId AND ba.AuthorType = 1
-                                       AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@WriterIds, ','))))
-
-                               AND (@EditorIds IS NULL OR @EditorIds = '' OR EXISTS (
-                                     SELECT 1 FROM BookAuthors ba
-                                     WHERE ba.BookId = b.BookId AND ba.AuthorType = 2
-                                       AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@EditorIds, ','))))
-
-                               AND (@TranslatorIds IS NULL OR @TranslatorIds = '' OR EXISTS (
-                                     SELECT 1 FROM BookAuthors ba
-                                     WHERE ba.BookId = b.BookId AND ba.AuthorType = 3
-                                       AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@TranslatorIds, ','))))
+                                       AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@AuthorIds, ','))))
                          )
                          SELECT
                              b.BookId,
@@ -238,9 +216,7 @@ namespace BookStore.Infrastructure.Repositories
                     Step = step,
                     PublisherIds = ToCsv(model.PublisherIds),
                     CategoryIds = ToCsv(model.CategoryIds),
-                    WriterIds = ToCsv(model.WriterIds),
-                    EditorIds = ToCsv(model.EditorIds),
-                    TranslatorIds = ToCsv(model.TranslatorIds),
+                    AuthorIds = ToCsv(model.AuthorIds),
                     Name = string.IsNullOrWhiteSpace(model.Name) ? null : model.Name,
                     ISBN = string.IsNullOrWhiteSpace(model.ISBN) ? null : model.ISBN,
                     FromPrice = model.FromPrice,
@@ -289,20 +265,10 @@ namespace BookStore.Infrastructure.Repositories
                                      WHERE bc.BookId = b.BookId
                                        AND bc.CategoryId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@CategoryIds, ','))))
 
-                               AND (@WriterIds IS NULL OR @WriterIds = '' OR EXISTS (
+                               AND (@AuthorIds IS NULL OR @AuthorIds = '' OR EXISTS (
                                      SELECT 1 FROM BookAuthors ba
                                      WHERE ba.BookId = b.BookId AND ba.AuthorType = 1
-                                       AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@WriterIds, ','))))
-
-                               AND (@EditorIds IS NULL OR @EditorIds = '' OR EXISTS (
-                                     SELECT 1 FROM BookAuthors ba
-                                     WHERE ba.BookId = b.BookId AND ba.AuthorType = 2
-                                       AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@EditorIds, ','))))
-
-                               AND (@TranslatorIds IS NULL OR @TranslatorIds = '' OR EXISTS (
-                                     SELECT 1 FROM BookAuthors ba
-                                     WHERE ba.BookId = b.BookId AND ba.AuthorType = 3
-                                       AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@TranslatorIds, ','))))
+                                       AND ba.AuthorId IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@AuthorIds, ','))))
                          )
                          SELECT
                              b.BookId,
@@ -355,9 +321,7 @@ namespace BookStore.Infrastructure.Repositories
                     Step = step,
                     PublisherIds = ToCsv(model.PublisherIds),
                     CategoryIds = ToCsv(model.CategoryIds),
-                    WriterIds = ToCsv(model.WriterIds),
-                    EditorIds = ToCsv(model.EditorIds),
-                    TranslatorIds = ToCsv(model.TranslatorIds),
+                    AuthorIds = ToCsv(model.AuthorIds),
                     Name = string.IsNullOrWhiteSpace(model.Name) ? null : model.Name,
                     ISBN = string.IsNullOrWhiteSpace(model.ISBN) ? null : model.ISBN,
                     FromPrice = model.FromPrice,

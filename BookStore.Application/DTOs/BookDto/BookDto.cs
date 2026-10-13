@@ -79,9 +79,7 @@ namespace BookStore.Application.DTOs.BookDto
         public bool IsExist { get; set; } = true;
         public List<int> PublisherIds { get; set; } = new();
         public List<int> CategoryIds { get; set; } = new();
-        public List<int> WriterIds { get; set; } = new();
-        public List<int> EditorIds { get; set; } = new();
-        public List<int> TranslatorIds { get; set; } = new();
+        public List<int> AuthorIds { get; set; } = new();
         public BookSortBy SortBy { get; set; } = BookSortBy.Newest;
     }
 

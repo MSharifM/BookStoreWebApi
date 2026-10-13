@@ -9,5 +9,7 @@ namespace BookStore.Application.Interfaces.Repositories
         Task<int> GetPublisherIdAsync(string userId);
 
         Task<int> GetCountPublisherBookAsync(int publisherId);
+
+        Task<List<PublisherSummaryResponse>> SearchPublisherByNameAsync(string? name);
     }
 }

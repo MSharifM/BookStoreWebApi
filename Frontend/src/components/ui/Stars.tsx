@@ -21,6 +21,7 @@ const TEXT: Record<NonNullable<Props['size']>, string> = {
 };
 
 export function Stars({ value, size = 'md', showValue = false, className }: Props) {
+  if (!value || value <= 0) return null;
   const safe = Math.max(0, Math.min(5, value));
 
   return (

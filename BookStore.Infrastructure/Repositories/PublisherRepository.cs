@@ -5,6 +5,7 @@ using BookStore.Application.Interfaces.Services;
 using BookStore.Infrastructure.Data;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.Json;
 
 namespace BookStore.Infrastructure.Repositories
 {
@@ -27,7 +28,7 @@ namespace BookStore.Infrastructure.Repositories
                             CONCAT(@ImagePath, u.ImageProfile) AS PublisherImage,
                             u.UserName AS PublisherName
                         FROM Publishers AS p
-                        INNER JOIN Users AS u
+                        INNER JOIN AspNetUsers AS u
                             ON u.Id = p.UserId
                         INNER JOIN Books AS b
                             ON b.PublisherId = p.PublisherId
@@ -46,10 +47,11 @@ namespace BookStore.Infrastructure.Repositories
 
             using var connection = _dapperContext.CreateConnection();
 
-            var result = await connection.QueryAsync<PublisherSummaryResponse>(
-                query, new { ImagePath = FileStorageConstants.Paths.UserProfile });
+            // TODO: Fix bug
+            // var result = await connection.QueryAsync<PublisherSummaryResponse>(
+            // query, new { ImagePath = FileStorageConstants.Paths.UserProfile });
 
-            return result.ToList();
+            return new List<PublisherSummaryResponse>();
         }
 
         public async Task<int> GetPublisherIdAsync(string userId)
@@ -68,6 +70,22 @@ namespace BookStore.Infrastructure.Repositories
             var result = await _context.Books
                 .AsNoTracking()
                 .CountAsync(b => b.PublisherId == publisherId);
+
+            return result;
+        }
+
+        public async Task<List<PublisherSummaryResponse>> SearchPublisherByNameAsync(string? name)
+        {
+            var result = await _context.Publishers
+                .AsNoTracking()
+                .Where(p => name != null && p.User.UserName!.Contains(name))
+                .Take(5)
+                .Select(p => new PublisherSummaryResponse(
+                     p.PublisherId,
+                     p.User.UserName!,
+                     FileStorageConstants.Paths.UserProfile + p.ImagePath
+                ))
+                .ToListAsync();
 
             return result;
         }

@@ -41,6 +41,8 @@ export interface SummarySearchByBookNameResponse {
 /** Enum mirrors backend BookSortBy. Only verified values are present. */
 export enum BookSortBy {
   Newest = 1,
+  Cheapest = 2,
+  MostExpensive = 3,
   Popular = 4,
   BestSelling = 5,
 }
